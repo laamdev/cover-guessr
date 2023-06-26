@@ -29,6 +29,7 @@ export const GamePage = ({ album }: { album: IAlbum }) => {
             alt={album.album}
             width={640}
             height={640}
+            priority
             className="h-72 w-72 rounded"
           />
           <h1 className="mt-2.5 max-w-prose text-center text-3xl leading-none tracking-tighter">
