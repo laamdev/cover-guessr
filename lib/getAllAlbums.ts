@@ -5,7 +5,7 @@ import { connect } from "@planetscale/database"
 import { eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/planetscale-serverless"
 
-export default async function getAllAlbums(): Promise<Album[]> {
+export default async function getAllAlbums(): Promise<IAlbum[]> {
   const conn = connect(config)
   const db = drizzle(conn)
   const results: IAlbum[] = await db
