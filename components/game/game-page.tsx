@@ -79,6 +79,7 @@ export const GamePage = ({ media }: { media: any }) => {
 
         <div className="flex flex-col items-center">
           <Image
+            priority
             src={media.cover_url!}
             alt={media.title}
             width={640}
