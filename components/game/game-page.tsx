@@ -28,10 +28,12 @@ export const GamePage = ({ media }: { media: any }) => {
 
   const handleNext = () => {
     setFade(true)
-    setTimeout(() => router.refresh(), 1000)
-    setTimeout(() => gameStore.setIsResult(), 1100)
-    setTimeout(() => setGuessedYear(1950), 1100)
-    setTimeout(() => setFade(false), 1200)
+    setTimeout(() => {
+      router.refresh()
+      gameStore.setIsResult()
+      // // setGuessedYear(1950)
+    }, 500)
+    setTimeout(() => setFade(false), 1000)
   }
 
   return (
