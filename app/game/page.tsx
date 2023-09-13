@@ -1,8 +1,10 @@
 import { cookies } from "next/headers"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
-import { getRandomMedia } from "@/lib/getRandomAlbum"
+import { getRandomMedia } from "@/lib/get-random-media"
 import { GamePage } from "@/components/game/game-page"
+
+export const dynamic = "force-dynamic"
 
 export default async function GameRoute({
   searchParams,
@@ -26,5 +28,5 @@ export default async function GameRoute({
 
   const randomMedia = await getRandomMedia(data)
 
-  return <GamePage media={randomMedia} category={category} />
+  return <GamePage media={randomMedia} />
 }

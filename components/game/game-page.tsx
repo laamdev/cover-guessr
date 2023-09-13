@@ -4,7 +4,6 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { IMedia } from "@/db/types"
 import { HomeIcon, RotateCcwIcon } from "lucide-react"
 import { Balancer } from "react-wrap-balancer"
 
@@ -15,22 +14,13 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 
-export const GamePage = ({
-  media,
-  category,
-}: {
-  media: IMedia
-  category: string | string[] | undefined
-}) => {
+export const GamePage = ({ media }: { media: any }) => {
   const gameStore = useGameStore()
   const router = useRouter()
   const [fade, setFade] = useState(false)
   const [guessedYear, setGuessedYear] = useState(1950)
 
   const handleGuess = () => {
-    // // setFade(true)
-    // // setTimeout(() => router.refresh(), 1000)
-    // // setTimeout(() => setFade(false), 1200)
     gameStore.setLives(getDifference(media.year, guessedYear))
     gameStore.setIsResult()
     gameStore.setScore()
@@ -46,7 +36,6 @@ export const GamePage = ({
 
   return (
     <section className="relative grid h-screen place-content-center">
-      {/* <div className="mx-auto max-w-2xl grow"> */}
       <Link
         href="/"
         className={cn(
@@ -89,17 +78,6 @@ export const GamePage = ({
         </div>
 
         <div className="flex flex-col items-center">
-          {/* <p>{`In what year was this ${
-            category === "all "
-              ? media.category.name
-              : category === "movies"
-              ? "movie"
-              : category === "albums"
-              ? "album"
-              : category === "videogames"
-              ? "videogame"
-              : media.category.name.slice(0, -1)
-          } released?`}</p> */}
           <Image
             src={media.cover_url!}
             alt={media.title}
