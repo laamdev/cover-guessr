@@ -1,24 +1,18 @@
-import { IAlbum } from "@/db/types"
-
-import getAllAlbums from "@/lib/getAllAlbums"
-
-const prevAlbumObj = {
+const prevMediaObj = {
   prev: 1,
   setPrev: function (num: number) {
     this.prev = num
   },
 }
 
-export default async function getRandomAlbum(): Promise<IAlbum> {
-  const results = await getAllAlbums()
+export const getRandomMedia = async (data: any) => {
+  let randomIndex = prevMediaObj.prev
 
-  let randomIndex = prevAlbumObj.prev
-
-  while (randomIndex === prevAlbumObj.prev) {
-    randomIndex = Math.floor(Math.random() * results.length)
+  while (randomIndex === prevMediaObj.prev) {
+    randomIndex = Math.floor(Math.random() * data.length)
   }
 
-  prevAlbumObj.setPrev(randomIndex)
+  prevMediaObj.setPrev(randomIndex)
 
-  return results[randomIndex]
+  return data[randomIndex]
 }

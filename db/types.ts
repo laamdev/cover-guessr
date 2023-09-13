@@ -1,7 +1,12 @@
-export interface IAlbum {
-  album: string
+type Category = {
+  name: string
+}
+
+export interface IMedia {
+  title: string
   year: number
-  cover: string
-  artist: string
+  author: string
   genre: string
+  cover_url: string
+  category: Category
 }
