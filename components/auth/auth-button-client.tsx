@@ -17,7 +17,7 @@ export const AuthButtonClient = ({ session }: { session: Session }) => {
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "http://localhost:3000/api/auth/callback",
+        redirectTo: `${location.origin}/api/auth/callback`,
       },
     })
   }

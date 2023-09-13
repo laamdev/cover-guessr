@@ -5,6 +5,8 @@ import { Inter } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { Hydrate } from "@/components/global/hydrate"
 
+export const dynamic = "force-dynamic"
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {

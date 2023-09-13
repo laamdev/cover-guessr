@@ -20,11 +20,11 @@
 export const getRandomMedia = async (array: any) => {
   let usedIndexArray = [] as number[]
   const max = array.length
-  let randomIndex = Math.floor(Math.random() * max)
+  let randomIndex
 
-  while (usedIndexArray.includes(randomIndex)) {
+  do {
     randomIndex = Math.floor(Math.random() * max)
-  }
+  } while (usedIndexArray.includes(randomIndex))
 
   usedIndexArray.push(randomIndex)
 
