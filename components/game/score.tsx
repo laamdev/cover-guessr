@@ -26,14 +26,6 @@ export const Score = ({ score, lives }: { score: number; lives: number }) => {
           <AwardIcon size={24} />
         </Button>
       </Badge>
-      {/* <Badge variant="outline" className="flex gap-x-2.5">
-        <span className="text-neutral-700">Score</span>
-        <span className="font-bold tabular-nums">{score}</span>
-      </Badge>
-      <Badge variant="outline" className="flex gap-x-2.5 bg-green-100">
-        <span className="text-neutral-700">Lives</span>
-        <span className="font-bold tabular-nums">{lives <= 0 ? 0 : lives}</span>
-      </Badge> */}
     </section>
   )
 }

@@ -101,7 +101,7 @@ export const GuessInput = ({
               <p>
                 <span>{`You have `}</span>
                 <span className="font-bold text-red-500">
-                  {gameStore.lives}
+                  {gameStore.lives <= 0 ? 0 : gameStore.lives}
                 </span>
                 <span>{` lives left`}</span>
               </p>

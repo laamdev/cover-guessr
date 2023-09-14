@@ -24,9 +24,6 @@ export const GamePage = ({
   const router = useRouter()
   const [guessedYear, setGuessedYear] = useState(1962)
   const [fade, setFade] = useState(false)
-  // // const [isResult, setIsResult] = useState(false)
-  // // const [lives, setLives] = useState(gameStore.lives)
-  // // const [score, setScore] = useState(gameStore.score)
 
   const handleNext = () => {
     setFade(true)
@@ -65,19 +62,7 @@ export const GamePage = ({
           year={media.year}
         />
 
-        {/* <Result
-          isResult={gameStore.isResult}
-          gameStore={gameStore}
-          media={media}
-          guessedYear={guessedYear}
-        /> */}
-
-        <GameButton
-          handleNext={handleNext}
-          handleGuess={handleGuess}
-          isResult={gameStore.isResult}
-          lives={gameStore.lives}
-        />
+        <GameButton handleNext={handleNext} handleGuess={handleGuess} />
       </div>
     </section>
   )
