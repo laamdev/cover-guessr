@@ -1,9 +1,9 @@
-import "./globals.css"
+import "@/app/globals.css"
 
 import { Inter } from "next/font/google"
 
 import { cn } from "@/lib/utils"
-import { Hydrate } from "@/components/global/hydrate"
+import { Toaster } from "@/components/ui/toaster"
 
 export const dynamic = "force-dynamic"
 
@@ -22,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, "container h-screen max-h-screen")}>
-        {children}
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   )
