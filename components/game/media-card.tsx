@@ -22,7 +22,7 @@ export const MediaCard = ({ media, fade }: { media: Media; fade: boolean }) => {
               alt={media.title}
               width={640}
               height={640}
-              className="mt-5 h-72 w-full rounded bg-neutral-100 object-contain object-center shadow md:h-64"
+              className="mt-5 h-72 w-auto rounded bg-neutral-100 object-contain object-center shadow md:h-64"
             />
             <h1 className="mt-2.5 max-w-prose text-center text-xl font-bold leading-none tracking-tighter md:text-3xl">
               <Balancer>{media.title}</Balancer>

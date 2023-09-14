@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 
-import { cn, getCurrentYear } from "@/lib/utils"
+import { cn, getCurrentYear, getDifference } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 
@@ -76,6 +76,16 @@ export const GuessInput = ({
                   {guessedYear}
                 </h3>
               </div>
+            </div>
+
+            <div className="mt-2.5 text-center">
+              <p>
+                <span>{`You missed by `}</span>
+                <span className="font-bold text-red-500">
+                  {getDifference(year, guessedYear)}
+                </span>
+                <span>{` years`}</span>
+              </p>
             </div>
           </motion.section>
         )}

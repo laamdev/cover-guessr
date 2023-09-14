@@ -34,11 +34,6 @@ export const GamePage = ({ media }: { media: any }) => {
     gameStore.setLives(getDifference(media.year, guessedYear))
     gameStore.setIsResult()
     gameStore.setScore()
-
-    toast({
-      title: `You missed by: `,
-      description: `${getDifference(media.year, guessedYear)}`,
-    })
   }
 
   return (

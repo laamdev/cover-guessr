@@ -4,7 +4,7 @@ import Link from "next/link"
 
 import { useGameStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 
 export const GameButton = ({
   handleNext,
@@ -21,9 +21,13 @@ export const GameButton = ({
         <div className="grid place-content-center">
           <Link
             href={`/game-over?score=${gameStore.score}`}
-            onClick={() => gameStore.reset()}
+            className={cn(
+              buttonVariants({
+                variant: "default",
+              })
+            )}
           >
-            See Score
+            Final Score
           </Link>
         </div>
       ) : (

@@ -21,7 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "container h-screen max-h-screen")}>
+      <body
+        className={cn(
+          inter.className,
+          "container h-screen max-h-screen max-w-4xl"
+        )}
+      >
         <main>{children}</main>
         <Toaster />
       </body>
