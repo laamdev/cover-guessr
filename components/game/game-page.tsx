@@ -66,12 +66,7 @@ export const GamePage = ({ media }: { media: any }) => {
           guessedYear={guessedYear}
         /> */}
 
-        <GameButton
-          media={media}
-          guessedYear={guessedYear}
-          handleNext={handleNext}
-          handleGuess={handleGuess}
-        />
+        <GameButton handleNext={handleNext} handleGuess={handleGuess} />
       </div>
     </section>
   )
