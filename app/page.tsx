@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label"
 import { AuthButtonServer } from "@/components/auth/auth-button-server"
 import { SelectCategory } from "@/components/game/select-category"
 
@@ -8,7 +7,7 @@ export default async function HomeRoute() {
       <h1 className="text-bold mt-5 text-4xl font-bold uppercase leading-none tracking-tighter md:text-5xl">
         Cover Guessr
       </h1>
-      <p className="prose mt-2.5 max-w-prose text-center md:prose-xl">
+      <p className="prose md:prose-xl mt-2.5 max-w-prose text-center">
         Guess the release year of an album, movie, or videogame. If you want to
         save your score history, log in first. Otherwise, you can play as a
         guest.
@@ -18,7 +17,7 @@ export default async function HomeRoute() {
       </div>
 
       <section className="mt-10 flex flex-col items-center justify-center">
-        <Label>Start a game:</Label>
+        <p>Start a game:</p>
 
         <SelectCategory />
       </section>

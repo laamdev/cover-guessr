@@ -3,7 +3,8 @@ import "@/app/globals.css"
 import { Inter } from "next/font/google"
 
 import { cn } from "@/lib/utils"
-import { Toaster } from "@/components/ui/toaster"
+import { Hydrate } from "@/components/global/hydrate"
+import { Providers } from "@/app/providers"
 
 export const dynamic = "force-dynamic"
 
@@ -20,15 +21,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-background text-foreground ">
       <body
         className={cn(
           inter.className,
-          "container h-screen max-h-screen max-w-4xl"
+          "container h-screen max-w-4xl overflow-hidden"
         )}
       >
-        <main>{children}</main>
-        <Toaster />
+        <Providers>
+          <Hydrate>
+            <main>{children}</main>
+          </Hydrate>
+        </Providers>
       </body>
     </html>
   )

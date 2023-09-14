@@ -16,7 +16,7 @@ export const Result = ({ gameStore, media, guessedYear, isResult }: any) => {
           <div
             className={cn(
               "mt-5 w-screen grid-cols-2 gap-x-5 px-5 md:max-w-xl",
-              gameStore.isResult ? "grid" : "hidden"
+              isResult ? "grid" : "hidden"
             )}
           >
             <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-neutral-900 px-1 py-2 md:px-2 md:py-3">

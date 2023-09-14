@@ -11,12 +11,12 @@ export default async function GameRoute({
 }) {
   const { category } = searchParams
   const supabase = createServerComponentClient({ cookies })
-
+  console.log(category)
   let query = supabase
     .from("media")
     .select("title, year, author, genre, cover_url, category!inner ( name )")
 
-  if (category === "all") {
+  if (category === "") {
     query = query
   } else {
     query = query.eq("category.name", category)
@@ -26,5 +26,10 @@ export default async function GameRoute({
 
   const randomMedia = await getRandomMedia(data)
 
-  return <GamePage media={randomMedia} />
+  const mediaName =
+    category === ""
+      ? randomMedia.category.name.slice(0, -1)
+      : category!.slice(0, -1)
+
+  return <GamePage media={randomMedia} category={mediaName} />
 }

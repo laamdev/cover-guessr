@@ -1,12 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { Button } from "@nextui-org/react"
 import {
   createClientComponentClient,
   type Session,
 } from "@supabase/auth-helpers-nextjs"
 
-import { Button } from "@/components/ui/button"
 import { GithubIcon } from "@/components/icons/github-icon"
 
 export const AuthButtonClient = ({ session }: { session: Session }) => {
@@ -35,9 +35,7 @@ export const AuthButtonClient = ({ session }: { session: Session }) => {
           Sign in with Github
         </Button>
       ) : (
-        <Button onClick={handleSignOut} variant="outline">
-          Sign out
-        </Button>
+        <Button onClick={handleSignOut}>Sign out</Button>
       )}
     </div>
   )

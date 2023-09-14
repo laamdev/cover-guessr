@@ -1,10 +1,12 @@
 "use client"
 
+import { Input } from "@nextui-org/react"
 import { AnimatePresence, motion } from "framer-motion"
 
+import { useGameStore } from "@/lib/store"
 import { cn, getCurrentYear, getDifference } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
-import { Slider } from "@/components/ui/slider"
+
+// // import { Slider } from "@/components/ui/slider"
 
 export const GuessInput = ({
   guessedYear,
@@ -19,6 +21,7 @@ export const GuessInput = ({
 }) => {
   const minYear = 1900
   const maxYear = getCurrentYear()
+  const gameStore = useGameStore()
 
   return (
     <div className="grid h-36 place-content-center">
@@ -30,20 +33,28 @@ export const GuessInput = ({
             exit={{ opacity: 0 }}
             className={cn("w-72 flex-col items-center justify-center md:w-96")}
           >
-            <div className="flex justify-between text-xs font-medium">
-              <div>{minYear}</div>
-              <div>{maxYear}</div>
-            </div>
-            <Slider
+            {/* <Slider
               className="mt-1"
               defaultValue={[1962]}
               max={maxYear}
               min={minYear}
               step={1}
               onValueChange={(i) => setGuessedYear(i[0])}
-            />
+            /> */}
             <div className="grid place-content-center">
               <Input
+                type="number"
+                label="Guess a year"
+                labelPlacement="outside"
+                min={minYear}
+                max={maxYear}
+                defaultValue="1968"
+                onChange={(e) => setGuessedYear(+e.target.value)}
+
+                // // placeholder="Enter your email"
+                // // description={placement}
+              />
+              {/* <Input
                 id="guessed-year-input"
                 className="mt-5 text-base font-bold md:text-xl"
                 type="number"
@@ -51,7 +62,7 @@ export const GuessInput = ({
                 min={1900}
                 value={guessedYear}
                 onChange={(e) => setGuessedYear(+e.target.value)}
-              />
+              /> */}
             </div>
           </motion.div>
         ) : (
@@ -62,15 +73,15 @@ export const GuessInput = ({
           >
             <div
               className={cn(
-                "w-screen grid-cols-2 gap-x-5 px-5 md:max-w-xl",
+                "w-screen grid-cols-2 gap-x-5 px-5 md:max-w-md",
                 isResult ? "grid" : "hidden"
               )}
             >
-              <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-neutral-900 px-1 py-2 md:px-2 md:py-3">
+              <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-neutral-900 px-1 py-2">
                 <p className="text-xs md:text-sm">Release Year</p>
                 <h3 className="text-base font-bold md:text-lg">{year}</h3>
               </div>
-              <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-neutral-900 px-1 py-2 md:px-2 md:py-3">
+              <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-neutral-900 px-1 py-2">
                 <p className="text-xs md:text-sm">Your Guess</p>
                 <h3 className="text-base font-bold md:text-lg">
                   {guessedYear}
@@ -78,13 +89,21 @@ export const GuessInput = ({
               </div>
             </div>
 
-            <div className="mt-2.5 text-center">
+            <div className="mt-2.5 text-center text-sm">
               <p>
                 <span>{`You missed by `}</span>
                 <span className="font-bold text-red-500">
                   {getDifference(year, guessedYear)}
                 </span>
                 <span>{` years`}</span>
+              </p>
+
+              <p>
+                <span>{`You have `}</span>
+                <span className="font-bold text-red-500">
+                  {gameStore.lives}
+                </span>
+                <span>{` lives left`}</span>
               </p>
             </div>
           </motion.section>

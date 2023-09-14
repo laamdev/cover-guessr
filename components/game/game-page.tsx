@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Media } from "@/types"
 
 import { useGameStore } from "@/lib/store"
 import { cn, getDifference } from "@/lib/utils"
-import { useToast } from "@/components/ui/use-toast"
 import { GameButton } from "@/components/game/game-button"
 import { GuessInput } from "@/components/game/guess-input"
 import { HomeButton } from "@/components/game/home-button"
@@ -13,15 +13,24 @@ import { MediaCard } from "@/components/game/media-card"
 import { ResetButton } from "@/components/game/reset-button"
 import { Score } from "@/components/game/score"
 
-export const GamePage = ({ media }: { media: any }) => {
-  const { toast } = useToast()
+export const GamePage = ({
+  media,
+  category,
+}: {
+  media: Media
+  category: string | string[] | undefined
+}) => {
   const gameStore = useGameStore()
   const router = useRouter()
   const [guessedYear, setGuessedYear] = useState(1962)
   const [fade, setFade] = useState(false)
+  // // const [isResult, setIsResult] = useState(false)
+  // // const [lives, setLives] = useState(gameStore.lives)
+  // // const [score, setScore] = useState(gameStore.score)
 
   const handleNext = () => {
     setFade(true)
+
     setTimeout(() => {
       router.refresh()
       gameStore.setIsResult()
@@ -30,10 +39,10 @@ export const GamePage = ({ media }: { media: any }) => {
     setTimeout(() => setFade(false), 1000)
   }
 
-  const handleGuess = async () => {
+  const handleGuess = () => {
     gameStore.setLives(getDifference(media.year, guessedYear))
-    gameStore.setIsResult()
     gameStore.setScore()
+    gameStore.setIsResult()
   }
 
   return (
@@ -42,9 +51,12 @@ export const GamePage = ({ media }: { media: any }) => {
       <ResetButton />
 
       <div className={cn("flex flex-col items-center justify-center py-10")}>
-        <Score score={gameStore.score} lives={gameStore.lives} />
+        <Score
+          score={gameStore.score}
+          lives={gameStore.lives <= 0 ? 0 : gameStore.lives}
+        />
 
-        <MediaCard media={media} fade={fade} />
+        <MediaCard media={media} fade={fade} category={category} />
 
         <GuessInput
           isResult={gameStore.isResult}
@@ -60,7 +72,12 @@ export const GamePage = ({ media }: { media: any }) => {
           guessedYear={guessedYear}
         /> */}
 
-        <GameButton handleNext={handleNext} handleGuess={handleGuess} />
+        <GameButton
+          handleNext={handleNext}
+          handleGuess={handleGuess}
+          isResult={gameStore.isResult}
+          lives={gameStore.lives}
+        />
       </div>
     </section>
   )

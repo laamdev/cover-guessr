@@ -5,7 +5,15 @@ import { Media } from "@/types"
 import { AnimatePresence, motion } from "framer-motion"
 import Balancer from "react-wrap-balancer"
 
-export const MediaCard = ({ media, fade }: { media: Media; fade: boolean }) => {
+export const MediaCard = ({
+  media,
+  fade,
+  category,
+}: {
+  media: Media
+  fade: boolean
+  category: string | string[] | undefined
+}) => {
   return (
     <div className="mt-5 grid h-96 w-96 place-content-center">
       <AnimatePresence>
@@ -16,6 +24,7 @@ export const MediaCard = ({ media, fade }: { media: Media; fade: boolean }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
+            <p>{`In what year was this ${category} published?`}</p>
             <Image
               priority
               src={media.cover_url!}
@@ -27,7 +36,7 @@ export const MediaCard = ({ media, fade }: { media: Media; fade: boolean }) => {
             <h1 className="mt-2.5 max-w-prose text-center text-xl font-bold leading-none tracking-tighter md:text-3xl">
               <Balancer>{media.title}</Balancer>
             </h1>
-            <h2 className="text-sm text-neutral-700 md:text-xl">
+            <h2 className="text-sm text-neutral-700 md:text-lg">
               {media.author}
             </h2>
           </motion.div>
