@@ -6,13 +6,12 @@ import { useRouter } from "next/navigation"
 import { useGameStore } from "@/lib/store"
 import { cn, getDifference } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
+import { GameButton } from "@/components/game/game-button"
 import { GuessInput } from "@/components/game/guess-input"
+import { HomeButton } from "@/components/game/home-button"
 import { MediaCard } from "@/components/game/media-card"
 import { ResetButton } from "@/components/game/reset-button"
 import { Score } from "@/components/game/score"
-
-import { GameButton } from "./game-button"
-import { HomeButton } from "./home-button"
 
 export const GamePage = ({ media }: { media: any }) => {
   const { toast } = useToast()
@@ -26,7 +25,7 @@ export const GamePage = ({ media }: { media: any }) => {
     setTimeout(() => {
       router.refresh()
       gameStore.setIsResult()
-      // // setGuessedYear(1962)
+      setGuessedYear(1962)
     }, 500)
     setTimeout(() => setFade(false), 1000)
   }
