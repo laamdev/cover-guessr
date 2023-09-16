@@ -24,14 +24,16 @@ export const GuessInput = ({
   const gameStore = useGameStore()
 
   return (
-    <div className="grid h-32 place-content-center">
+    <div className="mt-5 grid place-content-center">
       <AnimatePresence>
         {!isResult ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn("w-72 flex-col items-center justify-center md:w-96")}
+            className={cn(
+              "mt-5 w-72 flex-col items-center justify-center md:w-96"
+            )}
           >
             {/* <Slider
               className="mt-1"

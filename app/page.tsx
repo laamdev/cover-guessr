@@ -3,7 +3,7 @@ import { SelectCategory } from "@/components/game/select-category"
 
 export default async function HomeRoute() {
   return (
-    <div className="grid h-screen place-content-center place-items-center">
+    <div className="grid min-h-screen place-content-center place-items-center">
       <h1 className="text-bold mt-5 text-4xl font-bold uppercase leading-none tracking-tighter md:text-5xl">
         Cover Guessr
       </h1>

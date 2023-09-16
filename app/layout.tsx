@@ -22,10 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html
-      lang="en"
-      className="h-screen overflow-hidden bg-background text-foreground "
-    >
+    <html lang="en">
       <body className={cn(inter.className, "container relative max-w-4xl")}>
         <Providers>
           <Hydrate>

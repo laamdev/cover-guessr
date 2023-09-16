@@ -18,7 +18,7 @@ export const GameButton = ({
   const gameStore = useGameStore()
 
   return (
-    <>
+    <div className="mt-5">
       {gameStore.lives <= 0 ? (
         <div className="grid place-content-center">
           <Link href={`/game-over?score=${gameStore.score}`}>
@@ -43,6 +43,6 @@ export const GameButton = ({
           Take a guess
         </Button>
       </div>
-    </>
+    </div>
   )
 }

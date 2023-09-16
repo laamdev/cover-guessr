@@ -46,13 +46,13 @@ export const GamePage = ({
   }
 
   return (
-    <section className="relative grid h-screen place-content-center">
+    <section className="relative grid min-h-screen place-content-center">
       <div className="absolute left-4 top-4 flex gap-x-2.5">
         <HomeButton />
         <ResetButton />
       </div>
 
-      <div className={cn("flex flex-col items-center justify-center py-10")}>
+      <div className={cn("flex flex-col items-center justify-center py-5")}>
         <Score
           score={gameStore.score}
           lives={gameStore.lives <= 0 ? 0 : gameStore.lives}
@@ -60,19 +60,19 @@ export const GamePage = ({
 
         <MediaCard media={media} fade={fade} category={category} />
 
-        <GuessInput
-          isResult={gameStore.isResult}
-          guessedYear={guessedYear}
-          setGuessedYear={setGuessedYear}
-          year={media.year}
-        />
-
         {/* <Result
           isResult={gameStore.isResult}
           gameStore={gameStore}
           media={media}
           guessedYear={guessedYear}
         /> */}
+
+        <GuessInput
+          isResult={gameStore.isResult}
+          guessedYear={guessedYear}
+          setGuessedYear={setGuessedYear}
+          year={media.year}
+        />
 
         <GameButton
           handleNext={handleNext}
