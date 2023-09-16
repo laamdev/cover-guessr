@@ -26,7 +26,9 @@ export default function RootLayout({
       <body className={cn(inter.className, "container relative max-w-4xl")}>
         <Providers>
           <Hydrate>
-            <main>{children}</main>
+            <main className="grid min-h-screen place-content-center place-items-center">
+              {children}
+            </main>
             <ThemeSwitcher />
           </Hydrate>
         </Providers>

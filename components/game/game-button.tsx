@@ -20,7 +20,7 @@ export const GameButton = ({
   return (
     <div className="mt-5">
       {gameStore.lives <= 0 ? (
-        <div className="grid place-content-center">
+        <div>
           <Link href={`/game-over?score=${gameStore.score}`}>
             <Button>Final Score</Button>
           </Link>

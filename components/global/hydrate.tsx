@@ -14,7 +14,7 @@ export const Hydrate = ({ children }: { children: ReactNode }) => {
       {isHydrated ? (
         <>{children}</>
       ) : (
-        <div className="grid place-content-center place-items-center">
+        <div className="grid h-screen place-content-center place-items-center">
           <Spinner color="default" size="md" />
         </div>
       )}

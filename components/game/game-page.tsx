@@ -46,7 +46,7 @@ export const GamePage = ({
   }
 
   return (
-    <section className="relative grid min-h-screen place-content-center">
+    <section>
       <div className="absolute left-4 top-4 flex gap-x-2.5">
         <HomeButton />
         <ResetButton />
