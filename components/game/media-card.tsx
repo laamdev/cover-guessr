@@ -21,7 +21,7 @@ export const MediaCard = ({
     >
       <CardBody>
         <div className="flex flex-col items-center">
-          <p className="mb-5">{`In what year was this ${category} published?`}</p>
+          <p className="mb-5">{`In what year was this ${category} released?`}</p>
           <Image
             src={media.cover_url!}
             alt={media.title}
