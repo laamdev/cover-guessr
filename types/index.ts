@@ -7,7 +7,6 @@ export type Media = {
   year: number
   cover_url: string
   author: string
-  genre: string
   cover: string
   category: Category
 }

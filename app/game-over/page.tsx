@@ -1,3 +1,5 @@
+import { Card, CardBody } from "@nextui-org/card"
+
 import { SelectCategory } from "@/components/game/select-category"
 
 export default async function GameOverRoute({
@@ -12,12 +14,12 @@ export default async function GameOverRoute({
       <h1 className="text-bold mt-5 text-4xl font-bold uppercase leading-none tracking-tighter md:text-5xl">
         Game Over
       </h1>
-      <div className="relative mt-10 flex h-24 w-24 flex-col items-center justify-center rounded border-2 border-primary px-2.5">
-        <h2 className="font-medium">Score</h2>
-        <p className="mt-2.5 w-full rounded bg-neutral-100 text-center text-4xl font-bold">
-          {score}
-        </p>
-      </div>
+      <Card className="mt-5 md:mt-10">
+        <CardBody className="flex flex-col items-center">
+          <h2 className="font-medium">Score</h2>
+          <p className="text-3xl  font-bold">{score}</p>
+        </CardBody>
+      </Card>
 
       <div className="mt-10 flex flex-col items-center justify-center">
         <p>Play a new game</p>

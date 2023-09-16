@@ -24,7 +24,7 @@ export const GuessInput = ({
   const gameStore = useGameStore()
 
   return (
-    <div className="grid h-36 place-content-center">
+    <div className="grid h-32 place-content-center">
       <AnimatePresence>
         {!isResult ? (
           <motion.div
@@ -41,28 +41,27 @@ export const GuessInput = ({
               step={1}
               onValueChange={(i) => setGuessedYear(i[0])}
             /> */}
-            <div className="grid place-content-center">
+            <div className="relative grid place-content-center">
               <Input
                 type="number"
                 label="Guess a year"
                 labelPlacement="outside"
                 min={minYear}
                 max={maxYear}
-                defaultValue="1968"
+                defaultValue="1962"
                 onChange={(e) => setGuessedYear(+e.target.value)}
 
                 // // placeholder="Enter your email"
                 // // description={placement}
               />
-              {/* <Input
-                id="guessed-year-input"
-                className="mt-5 text-base font-bold md:text-xl"
-                type="number"
-                max={getCurrentYear()}
-                min={1900}
-                value={guessedYear}
-                onChange={(e) => setGuessedYear(+e.target.value)}
-              /> */}
+
+              {guessedYear > maxYear || guessedYear < minYear ? (
+                <p className="absolute -bottom-5 w-full text-center text-xs text-red-500">
+                  The year must be between {minYear} and {maxYear}
+                </p>
+              ) : (
+                <></>
+              )}
             </div>
           </motion.div>
         ) : (
@@ -89,21 +88,21 @@ export const GuessInput = ({
               </div>
             </div>
 
-            <div className="mt-2.5 text-center text-sm">
+            <div className="mt-2.5 flex items-center justify-center gap-x-1 text-center text-sm">
               <p>
                 <span>{`You missed by `}</span>
-                <span className="font-bold text-red-500">
-                  {getDifference(year, guessedYear)}
+                <span className="font-bold tabular-nums text-red-500">
+                  {`${getDifference(year, guessedYear)}`}
                 </span>
-                <span>{` years`}</span>
+                <span>{` years.`}</span>
               </p>
 
               <p>
                 <span>{`You have `}</span>
-                <span className="font-bold text-red-500">
+                <span className="font-bold tabular-nums text-green-500">
                   {gameStore.lives <= 0 ? 0 : gameStore.lives}
                 </span>
-                <span>{` lives left`}</span>
+                <span>{` lives left.`}</span>
               </p>
             </div>
           </motion.section>

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 
 import { cn } from "@/lib/utils"
 import { Hydrate } from "@/components/global/hydrate"
+import { ThemeSwitcher } from "@/components/global/theme-switcher"
 import { Providers } from "@/app/providers"
 
 export const dynamic = "force-dynamic"
@@ -21,16 +22,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="bg-background text-foreground ">
-      <body
-        className={cn(
-          inter.className,
-          "container h-screen max-w-4xl overflow-hidden"
-        )}
-      >
+    <html
+      lang="en"
+      className="h-screen overflow-hidden bg-background text-foreground "
+    >
+      <body className={cn(inter.className, "container relative max-w-4xl")}>
         <Providers>
           <Hydrate>
             <main>{children}</main>
+            <ThemeSwitcher />
           </Hydrate>
         </Providers>
       </body>

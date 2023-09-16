@@ -24,6 +24,9 @@ export const GamePage = ({
   const router = useRouter()
   const [guessedYear, setGuessedYear] = useState(1962)
   const [fade, setFade] = useState(false)
+  // // const [isResult, setIsResult] = useState(false)
+  // // const [lives, setLives] = useState(gameStore.lives)
+  // // const [score, setScore] = useState(gameStore.score)
 
   const handleNext = () => {
     setFade(true)
@@ -44,8 +47,10 @@ export const GamePage = ({
 
   return (
     <section className="relative grid h-screen place-content-center">
-      <HomeButton />
-      <ResetButton />
+      <div className="absolute left-4 top-4 flex gap-x-2.5">
+        <HomeButton />
+        <ResetButton />
+      </div>
 
       <div className={cn("flex flex-col items-center justify-center py-10")}>
         <Score
@@ -62,7 +67,18 @@ export const GamePage = ({
           year={media.year}
         />
 
-        <GameButton handleNext={handleNext} handleGuess={handleGuess} />
+        {/* <Result
+          isResult={gameStore.isResult}
+          gameStore={gameStore}
+          media={media}
+          guessedYear={guessedYear}
+        /> */}
+
+        <GameButton
+          handleNext={handleNext}
+          handleGuess={handleGuess}
+          guessedYear={guessedYear}
+        />
       </div>
     </section>
   )

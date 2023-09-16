@@ -11,10 +11,10 @@ export default async function GameRoute({
 }) {
   const { category } = searchParams
   const supabase = createServerComponentClient({ cookies })
-  console.log(category)
+
   let query = supabase
     .from("media")
-    .select("title, year, author, genre, cover_url, category!inner ( name )")
+    .select("title, year, author, cover_url, category!inner ( name )")
 
   if (category === "") {
     query = query

@@ -14,7 +14,7 @@ export const ResetButton = () => {
   }
 
   return (
-    <Button className="absolute right-4 top-4" onClick={handleReset}>
+    <Button isIconOnly onClick={handleReset}>
       <RotateCcwIcon className="h-4 w-4" />
     </Button>
   )

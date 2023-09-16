@@ -4,14 +4,16 @@ import Link from "next/link"
 import { Button } from "@nextui-org/react"
 
 import { useGameStore } from "@/lib/store"
-import { cn } from "@/lib/utils"
+import { cn, getCurrentYear } from "@/lib/utils"
 
 export const GameButton = ({
   handleNext,
   handleGuess,
+  guessedYear,
 }: {
   handleNext: any
   handleGuess: any
+  guessedYear: number
 }) => {
   const gameStore = useGameStore()
 
@@ -32,12 +34,15 @@ export const GameButton = ({
         </Button>
       )}
 
-      <Button
-        onClick={handleGuess}
-        className={cn(gameStore.isResult ? "hidden" : "block")}
-      >
-        Take a guess
-      </Button>
+      <div className="relative flex flex-col items-center justify-center">
+        <Button
+          isDisabled={guessedYear > getCurrentYear() || guessedYear < 1900}
+          onClick={handleGuess}
+          className={cn(gameStore.isResult ? "hidden" : "block")}
+        >
+          Take a guess
+        </Button>
+      </div>
     </>
   )
 }

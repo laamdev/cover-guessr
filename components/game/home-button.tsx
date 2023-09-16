@@ -13,7 +13,7 @@ export const HomeButton = () => {
 
   return (
     <Link href="/">
-      <Button className="absolute left-4 top-4" onClick={handleReset}>
+      <Button isIconOnly onClick={handleReset}>
         <HomeIcon className="h-4 w-4" />
       </Button>
     </Link>
