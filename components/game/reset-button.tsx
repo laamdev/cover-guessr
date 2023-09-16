@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation"
-import { Button } from "@nextui-org/react"
+import { Button } from "@nextui-org/button"
+import { Tooltip } from "@nextui-org/tooltip"
 import { RotateCcwIcon } from "lucide-react"
 
 import { useGameStore } from "@/lib/store"
@@ -14,8 +15,10 @@ export const ResetButton = () => {
   }
 
   return (
-    <Button isIconOnly onClick={handleReset}>
-      <RotateCcwIcon className="h-4 w-4" />
-    </Button>
+    <Tooltip content="Restart">
+      <Button isIconOnly onClick={handleReset}>
+        <RotateCcwIcon className="h-4 w-4" />
+      </Button>
+    </Tooltip>
   )
 }

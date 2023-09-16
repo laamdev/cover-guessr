@@ -1,4 +1,5 @@
-import { Badge, Button } from "@nextui-org/react"
+import { Badge } from "@nextui-org/badge"
+import { Button } from "@nextui-org/button"
 import { AwardIcon, HeartIcon } from "lucide-react"
 
 export const Score = ({ score, lives }: { score: number; lives: number }) => {
@@ -15,6 +16,7 @@ export const Score = ({ score, lives }: { score: number; lives: number }) => {
           <HeartIcon size={24} />
         </Button>
       </Badge>
+
       <Badge content={`${score}`} shape="circle" color="success">
         <Button
           radius="full"
