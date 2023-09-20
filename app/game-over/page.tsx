@@ -22,7 +22,7 @@ export default async function GameOverRoute({
       </Card>
 
       <div className="mt-10 flex flex-col items-center justify-center">
-        <p>Play a new game</p>
+        <p>Pick a category to play again</p>
         <SelectCategory />
       </div>
     </div>
