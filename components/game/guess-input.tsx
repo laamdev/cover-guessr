@@ -50,7 +50,6 @@ export const GuessInput = ({
                   isIconOnly
                   size="sm"
                   variant="bordered"
-                  color="secondary"
                   onClick={() => setGuessedYear(+guessedYear - 1)}
                 >
                   <MinusIcon className="h-4 w-4" />
@@ -64,7 +63,6 @@ export const GuessInput = ({
                   max={maxYear}
                   value={guessedYear.toString()}
                   onChange={(e) => setGuessedYear(+e.target.value)}
-                  color="secondary"
                   variant="bordered"
                   className="w-36"
                   // // placeholder="Enter your email"
@@ -74,7 +72,6 @@ export const GuessInput = ({
                   isIconOnly
                   size="sm"
                   variant="bordered"
-                  color="secondary"
                   onClick={() => setGuessedYear(+guessedYear + 1)}
                 >
                   <PlusIcon className="h-4 w-4" />

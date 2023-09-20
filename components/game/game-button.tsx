@@ -22,14 +22,13 @@ export const GameButton = ({
       <div className="relative flex flex-col items-center justify-center">
         {gameStore.lives <= 0 ? (
           <Link href={`/game-over?score=${gameStore.score}`}>
-            <Button variant="ghost" color="secondary" size="sm">
+            <Button variant="ghost" size="sm">
               Final Score
             </Button>
           </Link>
         ) : (
           <Button
             variant="solid"
-            color="secondary"
             size="sm"
             onClick={handleNext}
             className={cn(gameStore.isResult ? "block" : "hidden")}
@@ -42,7 +41,6 @@ export const GameButton = ({
       <div className="relative flex flex-col items-center justify-center">
         <Button
           variant="solid"
-          color="secondary"
           size="sm"
           isDisabled={guessedYear > getCurrentYear() || guessedYear < 1900}
           onClick={handleGuess}
