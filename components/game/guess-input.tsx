@@ -1,7 +1,8 @@
 "use client"
 
-import { Input } from "@nextui-org/react"
+import { Button, Input } from "@nextui-org/react"
 import { AnimatePresence, motion } from "framer-motion"
+import { MinusIcon, PlusIcon } from "lucide-react"
 
 import { useGameStore } from "@/lib/store"
 import { cn, getCurrentYear, getDifference } from "@/lib/utils"
@@ -24,7 +25,7 @@ export const GuessInput = ({
   const gameStore = useGameStore()
 
   return (
-    <div className="mt-5 grid h-28 place-content-center">
+    <div className="grid place-content-center">
       <AnimatePresence>
         {!isResult ? (
           <motion.div
@@ -44,21 +45,44 @@ export const GuessInput = ({
               onValueChange={(i) => setGuessedYear(i[0])}
             /> */}
             <div className="relative grid place-content-center">
-              <Input
-                type="number"
-                label="Guess a year"
-                labelPlacement="outside"
-                min={minYear}
-                max={maxYear}
-                defaultValue="1962"
-                onChange={(e) => setGuessedYear(+e.target.value)}
-
-                // // placeholder="Enter your email"
-                // // description={placement}
-              />
+              <div className="flex items-center gap-2.5">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="bordered"
+                  color="secondary"
+                  onClick={() => setGuessedYear(+guessedYear - 1)}
+                >
+                  <MinusIcon className="h-4 w-4" />
+                </Button>
+                <Input
+                  type="number"
+                  size="sm"
+                  label="Guess a year"
+                  labelPlacement="outside"
+                  min={minYear}
+                  max={maxYear}
+                  value={guessedYear.toString()}
+                  onChange={(e) => setGuessedYear(+e.target.value)}
+                  color="secondary"
+                  variant="bordered"
+                  className="w-36"
+                  // // placeholder="Enter your email"
+                  // // description={placement}
+                />
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="bordered"
+                  color="secondary"
+                  onClick={() => setGuessedYear(+guessedYear + 1)}
+                >
+                  <PlusIcon className="h-4 w-4" />
+                </Button>
+              </div>
 
               {guessedYear > maxYear || guessedYear < minYear ? (
-                <p className="absolute -bottom-5 w-full text-center text-xs text-red-500">
+                <p className="absolute -bottom-4 w-full text-center text-[8px] text-red-500">
                   The year must be between {minYear} and {maxYear}
                 </p>
               ) : (
@@ -74,7 +98,7 @@ export const GuessInput = ({
           >
             <div
               className={cn(
-                "w-screen grid-cols-2 gap-x-5 px-5 md:max-w-md",
+                "w-screen grid-cols-3 gap-x-5 px-5 md:max-w-md",
                 isResult ? "grid" : "hidden"
               )}
             >
@@ -88,9 +112,15 @@ export const GuessInput = ({
                   {guessedYear}
                 </h3>
               </div>
+              <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-neutral-900 px-1 py-2">
+                <p className="text-xs md:text-sm">Missed By</p>
+                <h3 className="text-base font-bold text-red-700 md:text-lg">
+                  {getDifference(year, guessedYear)}{" "}
+                </h3>
+              </div>
             </div>
 
-            <div className="mt-2.5 flex items-center justify-center gap-x-1 text-center text-sm">
+            {/* <div className="flex items-center justify-center gap-x-1 text-center text-sm">
               <p>
                 <span>{`You missed by `}</span>
                 <span className="font-bold tabular-nums text-red-500">
@@ -106,7 +136,7 @@ export const GuessInput = ({
                 </span>
                 <span>{` lives left.`}</span>
               </p>
-            </div>
+            </div> */}
           </motion.section>
         )}
       </AnimatePresence>

@@ -25,7 +25,7 @@ export const ThemeSwitcher = () => {
     <div className="absolute right-4 top-4 flex gap-5">
       <Switch
         defaultSelected
-        size="lg"
+        size="sm"
         color="default"
         // // color="success"
         startContent={<MoonIcon />}

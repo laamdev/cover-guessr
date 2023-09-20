@@ -25,14 +25,61 @@ const config = {
     nextui({
       themes: {
         light: {
-          layout: {}, // light theme layout tokens
-          colors: {}, // light theme colors
+          extend: "light", // <- inherit default values from dark theme
+          colors: {
+            background: "#f3f1ff",
+            foreground: "#2c0076",
+            primary: {
+              50: "#f3f1ff",
+              100: "#ebe5ff",
+              200: "#d9ceff",
+              300: "#bea6ff",
+              400: "#9f75ff",
+              500: "#843dff",
+              600: "#7916ff",
+              700: "#6b04fd",
+              800: "#5a03d5",
+              900: "#4b05ad",
+              950: "#2c0076",
+              DEFAULT: "#843dff",
+              foreground: "#f3f1ff",
+            },
+
+            secondary: {
+              50: "#fef1f7",
+              100: "#fee5f0",
+              200: "#fecce3",
+              300: "#ffa2cb",
+              400: "#fe68a7",
+              500: "#f83c86",
+              600: "#e91f64",
+              700: "#ca0c47",
+              800: "#a70d3b",
+              900: "#8b1034",
+              950: "#55021a",
+              DEFAULT: "#f83c86",
+              foreground: "#fef1f7",
+            },
+
+            focus: "#7916ff",
+          },
+          layout: {
+            disabledOpacity: "0.3",
+            radius: {
+              small: "1px",
+              medium: "2px",
+              large: "4px",
+            },
+            borderWidth: {
+              small: "1px",
+              medium: "2px",
+              large: "3px",
+            },
+          },
+          // // layout: {}, // light theme layout tokens
+          // // colors: {}, // light theme colors
         },
         dark: {
-          layout: {}, // dark theme layout tokens
-          colors: {}, // dark theme colors
-        },
-        modern: {
           extend: "dark", // <- inherit default values from dark theme
           colors: {
             background: "#0D001A",

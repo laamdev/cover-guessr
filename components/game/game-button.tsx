@@ -18,24 +18,32 @@ export const GameButton = ({
   const gameStore = useGameStore()
 
   return (
-    <div className="mt-5">
-      {gameStore.lives <= 0 ? (
-        <div>
+    <section>
+      <div className="relative flex flex-col items-center justify-center">
+        {gameStore.lives <= 0 ? (
           <Link href={`/game-over?score=${gameStore.score}`}>
-            <Button>Final Score</Button>
+            <Button variant="ghost" color="secondary" size="sm">
+              Final Score
+            </Button>
           </Link>
-        </div>
-      ) : (
-        <Button
-          onClick={handleNext}
-          className={cn(gameStore.isResult ? "block" : "hidden")}
-        >
-          Keep Playing
-        </Button>
-      )}
+        ) : (
+          <Button
+            variant="solid"
+            color="secondary"
+            size="sm"
+            onClick={handleNext}
+            className={cn(gameStore.isResult ? "block" : "hidden")}
+          >
+            Keep Playing
+          </Button>
+        )}
+      </div>
 
       <div className="relative flex flex-col items-center justify-center">
         <Button
+          variant="solid"
+          color="secondary"
+          size="sm"
           isDisabled={guessedYear > getCurrentYear() || guessedYear < 1900}
           onClick={handleGuess}
           className={cn(gameStore.isResult ? "hidden" : "block")}
@@ -43,6 +51,6 @@ export const GameButton = ({
           Take a guess
         </Button>
       </div>
-    </div>
+    </section>
   )
 }

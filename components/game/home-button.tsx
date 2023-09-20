@@ -15,7 +15,7 @@ export const HomeButton = () => {
   return (
     <Link href="/">
       <Tooltip content="Home">
-        <Button isIconOnly onClick={handleReset}>
+        <Button isIconOnly size="sm" onClick={handleReset}>
           <HomeIcon className="h-4 w-4" />
         </Button>
       </Tooltip>
