@@ -9,7 +9,7 @@ export default async function HomeRoute() {
           Cover Guessr
         </h1>
         <p className="prose md:prose-xl mt-2.5 max-w-prose text-center">
-          Guess the release year of an album, movie, or videogame.
+          {`How many release years of your favorite media can you guess in a row?`}
         </p>
       </div>
 

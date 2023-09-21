@@ -25,7 +25,7 @@ export const GuessInput = ({
   const gameStore = useGameStore()
 
   return (
-    <div className="grid place-content-center">
+    <div className="grid h-16 place-content-center">
       <AnimatePresence>
         {!isResult ? (
           <motion.div

@@ -13,7 +13,8 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "Cover Guessr",
-  description: "Guess the release year of the album, movie, or videogame.",
+  description:
+    "How many release years of your favorite media can you guess in a row?",
 }
 
 export default function RootLayout({

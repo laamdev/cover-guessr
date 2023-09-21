@@ -17,9 +17,10 @@ export const SelectButton = ({
   const param = category === "all" ? "" : category
 
   return (
-    <div className="flex flex-col items-center gap-y-0.5">
+    <div className="flex flex-col items-center gap-y-1">
       <Button
         isIconOnly
+        size="sm"
         aria-label={category}
         onClick={() => gameStore.reset()}
       >
