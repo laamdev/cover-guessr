@@ -30,6 +30,7 @@ export const GameButton = ({
           <Button
             variant="solid"
             size="sm"
+            color="primary"
             onClick={handleNext}
             className={cn(gameStore.isResult ? "block" : "hidden")}
           >
@@ -42,6 +43,7 @@ export const GameButton = ({
         <Button
           variant="solid"
           size="sm"
+          color="primary"
           isDisabled={guessedYear > getCurrentYear() || guessedYear < 1900}
           onClick={handleGuess}
           className={cn(gameStore.isResult ? "hidden" : "block")}

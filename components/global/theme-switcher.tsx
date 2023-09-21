@@ -16,12 +16,10 @@ export const ThemeSwitcher = () => {
   if (!mounted) return null
 
   return (
-    <div className="absolute right-4 top-4 flex gap-5">
+    <div className="absolute right-4 top-5 flex gap-5">
       <Switch
-        size="sm"
-        color="default"
+        color="primary"
         defaultSelected={theme === "dark" ? true : false}
-        // // color="success"
         startContent={<MoonIcon />}
         endContent={<SunIcon />}
         onChange={() => setTheme(theme === "dark" ? "light" : "dark")}

@@ -30,12 +30,14 @@ export const AuthButtonClient = ({ session }: { session: Session }) => {
   return (
     <div>
       {session === null ? (
-        <Button onClick={handleSignIn}>
+        <Button onClick={handleSignIn} variant="solid" color="primary">
           <GithubIcon />
           Sign in with Github
         </Button>
       ) : (
-        <Button onClick={handleSignOut}>Sign out</Button>
+        <Button onClick={handleSignOut} variant="solid" color="primary">
+          Sign out
+        </Button>
       )}
     </div>
   )

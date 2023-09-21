@@ -4,6 +4,12 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { getRandomMedia } from "@/lib/get-random-media"
 import { GamePage } from "@/components/game/game-page"
 
+export const metadata: Metadata = {
+  title: "Cover Guessr",
+  description:
+    "How many release years of your favorite media can you guess in a row?",
+}
+
 export default async function GameRoute({
   searchParams,
 }: {

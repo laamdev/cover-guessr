@@ -15,7 +15,7 @@ export const Hydrate = ({ children }: { children: ReactNode }) => {
         <>{children}</>
       ) : (
         <div className="grid h-screen place-content-center place-items-center">
-          <Spinner color="default" size="md" />
+          <Spinner color="primary" size="md" />
         </div>
       )}
     </>

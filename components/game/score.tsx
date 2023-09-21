@@ -10,7 +10,8 @@ export const Score = ({ score, lives }: { score: number; lives: number }) => {
           radius="full"
           isIconOnly
           aria-label="lives"
-          variant="ghost"
+          variant="flat"
+          color="primary"
           size="sm"
           className="pointer-events-none"
         >
@@ -23,7 +24,8 @@ export const Score = ({ score, lives }: { score: number; lives: number }) => {
           radius="full"
           isIconOnly
           aria-label="score"
-          variant="ghost"
+          variant="flat"
+          color="primary"
           size="sm"
           className="pointer-events-none"
         >

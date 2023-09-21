@@ -16,7 +16,13 @@ export const ResetButton = () => {
 
   return (
     <Tooltip content="Restart">
-      <Button size="sm" isIconOnly onClick={handleReset}>
+      <Button
+        size="sm"
+        variant="solid"
+        color="primary"
+        isIconOnly
+        onClick={handleReset}
+      >
         <RotateCcwIcon className="h-4 w-4" />
       </Button>
     </Tooltip>

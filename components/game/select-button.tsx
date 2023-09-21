@@ -23,7 +23,8 @@ export const SelectButton = ({
     >
       <Button
         isIconOnly
-        size="sm"
+        color="primary"
+        variant="solid"
         aria-label={category}
         onClick={() => gameStore.reset()}
       >
