@@ -10,10 +10,9 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export async function generateMetadata(
-  { searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
   const { category } = searchParams
 
   const title =
@@ -23,6 +22,9 @@ export async function generateMetadata(
 
   return {
     title: title,
+    icons: {
+      shortcut: `/favicon/${category === "" ? "all" : category}/favicon.ico`,
+    },
   }
 }
 

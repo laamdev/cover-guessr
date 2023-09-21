@@ -47,21 +47,6 @@ const config = {
 
             focus: "#3b757f",
           },
-          // // layout: {
-          // //   disabledOpacity: "0.3",
-          // //   radius: {
-          // //     small: "1px",
-          // //     medium: "2px",
-          // //     large: "4px",
-          // //   },
-          // //   borderWidth: {
-          // //     small: "1px",
-          // //     medium: "2px",
-          // //     large: "3px",
-          // //   },
-          // // },
-          // // layout: {}, // light theme layout tokens
-          // // colors: {}, // light theme colors
         },
         dark: {
           extend: "dark", // <- inherit default values from dark theme
@@ -85,19 +70,6 @@ const config = {
             },
             focus: "#5faab1",
           },
-          // // layout: {
-          // //   disabledOpacity: "0.3",
-          // //   radius: {
-          // //     small: "1px",
-          // //     medium: "2px",
-          // //     large: "4px",
-          // //   },
-          // //   borderWidth: {
-          // //     small: "1px",
-          // //     medium: "2px",
-          // //     large: "3px",
-          // //   },
-          // // },
         },
       },
     }),
