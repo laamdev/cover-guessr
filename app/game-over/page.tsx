@@ -1,6 +1,11 @@
+import type { Metadata } from "next"
 import { Card, CardBody } from "@nextui-org/card"
 
 import { SelectCategory } from "@/components/game/select-category"
+
+export const metadata: Metadata = {
+  title: "Game Over",
+}
 
 export default async function GameOverRoute({
   searchParams,

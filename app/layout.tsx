@@ -1,6 +1,6 @@
 import "@/app/globals.css"
 
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
 import { cn } from "@/lib/utils"
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bluefinaviation.com"),
+  metadataBase: new URL("https://cover-guessr.vercel.app"),
   title: {
     default: "Cover Guessr",
     template: "%s | Cover Guessr",

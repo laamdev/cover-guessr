@@ -1,13 +1,29 @@
+import { Metadata, ResolvingMetadata } from "next"
 import { cookies } from "next/headers"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { getRandomMedia } from "@/lib/get-random-media"
 import { GamePage } from "@/components/game/game-page"
 
-export const metadata: Metadata = {
-  title: "Cover Guessr",
-  description:
-    "How many release years of your favorite media can you guess in a row?",
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { category } = searchParams
+
+  const title =
+    category === ""
+      ? "All"
+      : ((category![0].toUpperCase() + category?.slice(1)) as string)
+
+  return {
+    title: title,
+  }
 }
 
 export default async function GameRoute({
