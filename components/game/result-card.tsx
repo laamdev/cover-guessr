@@ -7,7 +7,7 @@ export const ResultCard = ({
 }: {
   label: string
   content: number
-  destructive: boolean
+  destructive?: boolean
 }) => {
   return (
     <div className="col-span-1 flex flex-col items-center rounded-lg border-2 border-primary px-1 py-2">
