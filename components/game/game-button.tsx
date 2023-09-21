@@ -22,7 +22,7 @@ export const GameButton = ({
       <div className="relative flex flex-col items-center justify-center">
         {gameStore.lives <= 0 ? (
           <Link href={`/game-over?score=${gameStore.score}`}>
-            <Button variant="ghost" size="sm">
+            <Button variant="solid" color="primary" size="sm">
               Final Score
             </Button>
           </Link>
