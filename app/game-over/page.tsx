@@ -19,7 +19,7 @@ export default async function GameOverRoute({
       <h1 className="text-bold mt-5 text-4xl font-bold uppercase leading-none tracking-tighter md:text-5xl">
         Game Over
       </h1>
-      <Card className="mt-5 md:mt-10">
+      <Card className="mt-5 border border-primary md:mt-10">
         <CardBody className="flex flex-col items-center">
           <h2 className="font-medium">Score</h2>
           <p className="text-3xl  font-bold">{score}</p>

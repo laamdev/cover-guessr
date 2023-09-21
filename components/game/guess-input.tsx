@@ -25,7 +25,7 @@ export const GuessInput = ({
   const gameStore = useGameStore()
 
   return (
-    <div className="grid h-16 place-content-center">
+    <div className="grid h-24 place-content-center">
       <AnimatePresence>
         {!isResult ? (
           <motion.div
@@ -42,7 +42,7 @@ export const GuessInput = ({
                   isIconOnly
                   size="sm"
                   color="primary"
-                  variant="bordered"
+                  variant="solid"
                   onClick={() => setGuessedYear(+guessedYear - 1)}
                 >
                   <MinusIcon className="h-4 w-4" />
@@ -52,7 +52,7 @@ export const GuessInput = ({
                   size="sm"
                   color="primary"
                   label="Guess a year"
-                  variant="flat"
+                  variant="faded"
                   labelPlacement="outside"
                   min={minYear}
                   max={maxYear}
@@ -66,7 +66,7 @@ export const GuessInput = ({
                   isIconOnly
                   size="sm"
                   color="primary"
-                  variant="bordered"
+                  variant="solid"
                   onClick={() => setGuessedYear(+guessedYear + 1)}
                 >
                   <PlusIcon className="h-4 w-4" />
@@ -90,17 +90,17 @@ export const GuessInput = ({
           >
             <div
               className={cn(
-                "w-full grid-cols-3 gap-x-5 px-5 md:max-w-md",
+                "w-full grid-cols-2 gap-x-5 px-5 md:max-w-md",
                 isResult ? "grid" : "hidden"
               )}
             >
               <ResultCard label="Release Year" content={year} />
               <ResultCard label="Your Guess" content={guessedYear} />
-              <ResultCard
+              {/* <ResultCard
                 label="Missed by"
                 content={getDifference(year, guessedYear)}
                 destructive={true}
-              />
+              /> */}
             </div>
           </motion.section>
         )}
