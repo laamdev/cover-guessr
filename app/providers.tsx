@@ -3,7 +3,8 @@
 import { ReactNode } from "react"
 import { NextUIProvider } from "@nextui-org/react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { Toaster } from "sonner"
+
+import { CustomToaster } from "@/components/global/custom-toaster"
 
 export const Providers = ({ children }: { children: ReactNode }) => {
   return (
@@ -13,7 +14,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         defaultTheme="dark"
         themes={["light", "dark"]}
       >
-        <Toaster />
+        <CustomToaster />
         {children}
       </NextThemesProvider>
     </NextUIProvider>

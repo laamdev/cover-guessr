@@ -3,9 +3,11 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Media } from "@/types"
+import { Card, CardBody } from "@nextui-org/react"
+import { toast } from "sonner"
 
 import { useGameStore } from "@/lib/store"
-import { cn, getDifference } from "@/lib/utils"
+import { getDifference } from "@/lib/utils"
 import { GameButton } from "@/components/game/game-button"
 import { GuessInput } from "@/components/game/guess-input"
 import { HomeButton } from "@/components/game/home-button"
@@ -24,9 +26,6 @@ export const GamePage = ({
   const router = useRouter()
   const [guessedYear, setGuessedYear] = useState(1962)
   const [fade, setFade] = useState(false)
-  // // const [isResult, setIsResult] = useState(false)
-  // // const [lives, setLives] = useState(gameStore.lives)
-  // // const [score, setScore] = useState(gameStore.score)
 
   const handleNext = () => {
     setFade(true)
@@ -43,6 +42,24 @@ export const GamePage = ({
     gameStore.setLives(getDifference(media.year, guessedYear))
     gameStore.setScore()
     gameStore.setIsResult()
+    toast(
+      <p>
+        {getDifference(media.year, guessedYear) !== 0 ? (
+          <>
+            <span>{`You missed by `}</span>
+            <span className="text-lg font-bold text-red-500">
+              {getDifference(media.year, guessedYear)}
+            </span>
+            <span>{` years.`}</span>
+          </>
+        ) : (
+          <>
+            <span className="text-green-500">{`Perfect guess! `}</span>
+            {/* <span>{`You won 1 extra point.`}</span> */}
+          </>
+        )}
+      </p>
+    )
   }
 
   return (
