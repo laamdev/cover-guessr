@@ -1,26 +1,26 @@
 const prevMediaObj = {
   prev: 1,
-  generatedIndices: [],
+  generatedIndices: [] as number[],
   setPrev: (num: number) => {
-    prevMediaObj.prev = num;
-    prevMediaObj.generatedIndices.push(num);
+    prevMediaObj.prev = num
+    prevMediaObj.generatedIndices.push(num)
   },
   reset: () => {
-    prevMediaObj.generatedIndices = [];
-  }
-};
+    prevMediaObj.generatedIndices = []
+  },
+}
 
 export const getRandomMedia = async (data: any) => {
   if (prevMediaObj.generatedIndices.length === data.length) {
-    prevMediaObj.reset();
+    prevMediaObj.reset()
   }
 
-  let randomIndex;
+  let randomIndex: number
   do {
-    randomIndex = Math.floor(Math.random() * data.length);
-  } while (prevMediaObj.generatedIndices.includes(randomIndex));
+    randomIndex = Math.floor(Math.random() * data.length)
+  } while (prevMediaObj.generatedIndices.includes(randomIndex))
 
-  prevMediaObj.setPrev(randomIndex);
+  prevMediaObj.setPrev(randomIndex)
 
-  return data[randomIndex];
+  return data[randomIndex]
 }

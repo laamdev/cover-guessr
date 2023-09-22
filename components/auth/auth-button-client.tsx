@@ -14,10 +14,10 @@ export const AuthButtonClient = ({ session }: { session: Session }) => {
   const router = useRouter()
 
   const handleSignIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "github",
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email: "laanayam333@gmail.com",
       options: {
-        redirectTo: `${location.origin}/api/auth/callback`,
+        emailRedirectTo: window.location.origin,
       },
     })
   }
