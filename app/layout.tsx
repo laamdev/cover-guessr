@@ -4,6 +4,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
 import { cn } from "@/lib/utils"
+import { HomeButton } from "@/components/game/home-button"
+import { LeaderboardButton } from "@/components/game/leaderboard-button"
 import { Hydrate } from "@/components/global/hydrate"
 import { ThemeSwitcher } from "@/components/global/theme-switcher"
 import { Providers } from "@/app/providers"
@@ -77,6 +79,10 @@ export default function RootLayout({
           <Hydrate>
             <main>{children}</main>
             <ThemeSwitcher />
+            <div className="absolute left-4 top-4 flex gap-x-2.5">
+              <HomeButton />
+              <LeaderboardButton />
+            </div>
           </Hydrate>
         </Providers>
       </body>

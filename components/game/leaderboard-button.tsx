@@ -3,11 +3,11 @@
 import Link from "next/link"
 import { Button } from "@nextui-org/button"
 import { Tooltip } from "@nextui-org/tooltip"
-import { HomeIcon } from "lucide-react"
+import { TrophyIcon } from "lucide-react"
 
 import { useGameStore } from "@/lib/store"
 
-export const HomeButton = () => {
+export const LeaderboardButton = () => {
   const gameStore = useGameStore()
 
   const handleReset = () => {
@@ -15,8 +15,8 @@ export const HomeButton = () => {
   }
 
   return (
-    <Link href="/">
-      <Tooltip content="Home">
+    <Link href="/leaderboard">
+      <Tooltip content="Leaderboard">
         <Button
           isIconOnly
           size="sm"
@@ -24,7 +24,7 @@ export const HomeButton = () => {
           variant="solid"
           color="primary"
         >
-          <HomeIcon className="h-4 w-4" />
+          <TrophyIcon className="h-4 w-4" />
         </Button>
       </Tooltip>
     </Link>

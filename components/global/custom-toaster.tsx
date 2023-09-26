@@ -9,9 +9,10 @@ export const CustomToaster = () => {
     <Toaster
       closeButton
       duration={3000}
-      position="bottom-center"
+      position="bottom-right"
       // @ts-expect-error
       theme={theme}
+      richColors
     />
   )
 }

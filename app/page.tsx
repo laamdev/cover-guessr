@@ -1,7 +1,13 @@
-import { AuthButtonServer } from "@/components/auth/auth-button-server"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+
+import { getSession, getUsers } from "@/lib/queries"
+import { AuthInputClient } from "@/components/auth/auth-input-client"
 import { SelectCategory } from "@/components/game/select-category"
 
 export default async function HomeRoute() {
+  const session = await getSession()
+  const users = await getUsers()
+
   return (
     <div>
       <div className="text-center">
@@ -13,8 +19,8 @@ export default async function HomeRoute() {
         </p>
       </div>
 
-      <div className="mt-2.5 flex items-center justify-center gap-x-5">
-        <AuthButtonServer />
+      <div className="mt-10 flex items-center justify-center gap-x-5">
+        <AuthInputClient session={session!} />
       </div>
 
       <section className="mt-10 flex flex-col items-center justify-center">

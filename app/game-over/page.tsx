@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Card, CardBody } from "@nextui-org/card"
 
+import { LeaderboardButton } from "@/components/game/leaderboard-button"
 import { SelectCategory } from "@/components/game/select-category"
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default async function GameOverRoute({
   const { score } = searchParams
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="relative flex flex-col items-center">
       <h1 className="text-bold mt-5 text-4xl font-bold uppercase leading-none tracking-tighter md:text-5xl">
         Game Over
       </h1>

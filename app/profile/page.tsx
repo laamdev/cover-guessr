@@ -1,12 +1,19 @@
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
-import { getSession } from "@/lib/get-session"
+import { getSession } from "@/lib/queries"
 
-export default async function ResultsPage() {
+export default async function ProfilePage() {
   const session = await getSession()
-  if (session === null) {
-    redirect("/login")
+
+  if (!session) {
+    redirect("/unauthenticated")
   }
 
-  return <div>page</div>
+  return (
+    <div>
+      <h1>Hello, {session.user.email}</h1>
+    </div>
+  )
 }

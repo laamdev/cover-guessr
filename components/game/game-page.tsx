@@ -3,24 +3,23 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Media } from "@/types"
-import { Card, CardBody } from "@nextui-org/react"
 import { toast } from "sonner"
 
 import { useGameStore } from "@/lib/store"
 import { getDifference } from "@/lib/utils"
 import { GameButton } from "@/components/game/game-button"
 import { GuessInput } from "@/components/game/guess-input"
-import { HomeButton } from "@/components/game/home-button"
 import { MediaCard } from "@/components/game/media-card"
-import { ResetButton } from "@/components/game/reset-button"
 import { Score } from "@/components/game/score"
 
 export const GamePage = ({
   media,
   category,
+  currentUserId,
 }: {
   media: Media
   category: string | string[] | undefined
+  currentUserId?: string
 }) => {
   const gameStore = useGameStore()
   const router = useRouter()
@@ -64,10 +63,9 @@ export const GamePage = ({
 
   return (
     <section className="grid grid-flow-row-dense place-items-center gap-y-5">
-      <div className="absolute left-4 top-4 flex gap-x-2.5">
-        <HomeButton />
+      {/* <div className="absolute left-16 top-4 flex gap-x-2.5">
         <ResetButton />
-      </div>
+      </div> */}
 
       <Score
         score={gameStore.score}
@@ -87,6 +85,8 @@ export const GamePage = ({
         handleNext={handleNext}
         handleGuess={handleGuess}
         guessedYear={guessedYear}
+        currentUserId={currentUserId}
+        category={category}
       />
     </section>
   )

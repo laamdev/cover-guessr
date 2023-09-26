@@ -1,13 +1,11 @@
 "use client"
 
-import { Button, Card, Input } from "@nextui-org/react"
+import { Button, Input } from "@nextui-org/react"
 import { AnimatePresence, motion } from "framer-motion"
 import { MinusIcon, PlusIcon } from "lucide-react"
 
-import { useGameStore } from "@/lib/store"
-import { cn, getCurrentYear, getDifference } from "@/lib/utils"
-
-import { ResultCard } from "./result-card"
+import { cn, getCurrentYear } from "@/lib/utils"
+import { ResultCard } from "@/components/game/result-card"
 
 export const GuessInput = ({
   guessedYear,
@@ -22,7 +20,6 @@ export const GuessInput = ({
 }) => {
   const minYear = 1900
   const maxYear = getCurrentYear()
-  const gameStore = useGameStore()
 
   return (
     <div className="grid h-24 place-content-center">
@@ -59,8 +56,6 @@ export const GuessInput = ({
                   value={guessedYear.toString()}
                   onChange={(e) => setGuessedYear(+e.target.value)}
                   className="w-36"
-                  // // placeholder="Enter your email"
-                  // // description={placement}
                 />
                 <Button
                   isIconOnly
@@ -96,11 +91,6 @@ export const GuessInput = ({
             >
               <ResultCard label="Release Year" content={year} />
               <ResultCard label="Your Guess" content={guessedYear} />
-              {/* <ResultCard
-                label="Missed by"
-                content={getDifference(year, guessedYear)}
-                destructive={true}
-              /> */}
             </div>
           </motion.section>
         )}

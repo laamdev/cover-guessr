@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { getRandomMedia } from "@/lib/get-random-media"
+import { getSession } from "@/lib/queries"
 import { GamePage } from "@/components/game/game-page"
 
 type Props = {
@@ -33,6 +34,8 @@ export default async function GameRoute({
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+  const session = await getSession()
+
   const { category } = searchParams
   const supabase = createServerComponentClient({ cookies })
 
@@ -55,5 +58,11 @@ export default async function GameRoute({
       ? randomMedia.category.name.slice(0, -1)
       : category!.slice(0, -1)
 
-  return <GamePage media={randomMedia} category={mediaName} />
+  return (
+    <GamePage
+      media={randomMedia}
+      category={mediaName}
+      currentUserId={session?.user.id}
+    />
+  )
 }
