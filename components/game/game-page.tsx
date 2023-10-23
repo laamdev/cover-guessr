@@ -23,7 +23,7 @@ export const GamePage = ({
 }) => {
   const gameStore = useGameStore()
   const router = useRouter()
-  const [guessedYear, setGuessedYear] = useState(1962)
+  const [guessedYear, setGuessedYear] = useState(null)
   const [fade, setFade] = useState(false)
 
   const handleNext = () => {
@@ -32,22 +32,22 @@ export const GamePage = ({
     setTimeout(() => {
       router.refresh()
       gameStore.setIsResult()
-      setGuessedYear(1962)
+      setGuessedYear(null)
     }, 500)
     setTimeout(() => setFade(false), 1000)
   }
 
   const handleGuess = () => {
-    gameStore.setLives(getDifference(media.year, guessedYear))
+    gameStore.setLives(getDifference(media.year, guessedYear!))
     gameStore.setScore()
     gameStore.setIsResult()
     toast(
       <p>
-        {getDifference(media.year, guessedYear) !== 0 ? (
+        {getDifference(media.year, guessedYear!) !== 0 ? (
           <>
             <span>{`You missed by `}</span>
             <span className="text-lg font-bold text-red-500">
-              {getDifference(media.year, guessedYear)}
+              {getDifference(media.year, guessedYear!)}
             </span>
             <span>{` years.`}</span>
           </>
@@ -76,7 +76,7 @@ export const GamePage = ({
 
       <GuessInput
         isResult={gameStore.isResult}
-        guessedYear={guessedYear}
+        guessedYear={guessedYear!}
         setGuessedYear={setGuessedYear}
         year={media.year}
       />
@@ -84,7 +84,7 @@ export const GamePage = ({
       <GameButton
         handleNext={handleNext}
         handleGuess={handleGuess}
-        guessedYear={guessedYear}
+        guessedYear={guessedYear!}
         currentUserId={currentUserId}
         category={category}
       />

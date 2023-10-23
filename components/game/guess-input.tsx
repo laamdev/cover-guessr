@@ -53,7 +53,7 @@ export const GuessInput = ({
                   labelPlacement="outside"
                   min={minYear}
                   max={maxYear}
-                  value={guessedYear.toString()}
+                  value={guessedYear ? guessedYear.toString() : ""}
                   onChange={(e) => setGuessedYear(+e.target.value)}
                   className="w-36"
                 />
@@ -69,8 +69,8 @@ export const GuessInput = ({
               </div>
 
               {guessedYear > maxYear || guessedYear < minYear ? (
-                <p className="absolute -bottom-4 w-full text-center text-[8px] text-red-500">
-                  The year must be between {minYear} and {maxYear}
+                <p className="absolute -bottom-6 w-full text-center text-xs opacity-50">
+                  Enter a year between {minYear} and {maxYear}
                 </p>
               ) : (
                 <></>
