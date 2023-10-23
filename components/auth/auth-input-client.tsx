@@ -21,7 +21,6 @@ export const AuthInputClient = ({ session }: { session: Session }) => {
     reset,
     formState: { errors },
   } = useForm<SignInInputs>({
-    // @ts-expect-error
     resolver: zodResolver(SignInSchema),
   })
 
