@@ -43,6 +43,19 @@ export const add = mutation({
   },
   handler: async (ctx, args) => {
     const identity = await requireAdmin(ctx);
+
+    const existing = await ctx.db
+      .query("albums")
+      .withIndex("by_artist_and_title", (q) =>
+        q.eq("artist", args.artist).eq("title", args.title),
+      )
+      .unique();
+    if (existing) {
+      throw new Error(
+        `Album "${args.title}" by ${args.artist} already exists`,
+      );
+    }
+
     return await ctx.db.insert("albums", {
       ...args,
       addedBy: identity.subject,

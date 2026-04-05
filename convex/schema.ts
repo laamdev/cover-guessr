@@ -8,7 +8,9 @@ export default defineSchema({
     releaseYear: v.number(),
     coverKey: v.string(),
     addedBy: v.string(),
-  }).index("by_year", ["releaseYear"]),
+  })
+    .index("by_year", ["releaseYear"])
+    .index("by_artist_and_title", ["artist", "title"]),
 
   games: defineTable({
     userId: v.string(),

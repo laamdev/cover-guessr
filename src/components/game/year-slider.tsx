@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 export function YearSlider({
   onSubmit,
@@ -25,10 +26,26 @@ export function YearSlider({
 
   return (
     <div className="w-full max-w-sm space-y-6">
-      <div className="text-center">
+      <div className="flex items-center justify-center gap-3">
+        <button
+          type="button"
+          disabled={disabled || year <= minYear}
+          onClick={() => setYear((y) => Math.max(minYear, y - 1))}
+          className="rounded-full p-1.5 text-muted-foreground hover:text-primary hover:bg-muted disabled:opacity-30 transition-colors"
+        >
+          <ChevronDown className="size-6" />
+        </button>
         <span className="text-5xl font-bold tabular-nums text-primary">
           {year}
         </span>
+        <button
+          type="button"
+          disabled={disabled || year >= maxYear}
+          onClick={() => setYear((y) => Math.min(maxYear, y + 1))}
+          className="rounded-full p-1.5 text-muted-foreground hover:text-primary hover:bg-muted disabled:opacity-30 transition-colors"
+        >
+          <ChevronUp className="size-6" />
+        </button>
       </div>
 
       <Slider
