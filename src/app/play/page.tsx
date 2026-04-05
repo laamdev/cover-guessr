@@ -81,11 +81,13 @@ export default function PlayPage() {
   }, [gameId]);
 
   // Only fetch the album needed for the guessing phase — during result we use resultAlbum
-  const shouldFetchAlbum =
-    game?.currentAlbumId && (phase === "guessing" || phase === "lobby");
+  const fetchAlbumId =
+    (phase === "guessing" || phase === "lobby") && game?.currentAlbumId
+      ? game.currentAlbumId
+      : undefined;
   const currentAlbumQuery = useQuery(
     api.albums.getById,
-    shouldFetchAlbum ? { id: game.currentAlbumId } : "skip"
+    fetchAlbumId ? { id: fetchAlbumId } : "skip"
   );
 
   // Cache albums as they load
