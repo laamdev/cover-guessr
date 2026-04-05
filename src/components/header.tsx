@@ -48,7 +48,7 @@ export function Header() {
                   size="sm"
                   className="text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
                 >
-                  [P] Play
+                  Play
                 </Button>
               </Link>
               <Link href="/leaderboard">
@@ -57,7 +57,7 @@ export function Header() {
                   size="sm"
                   className="text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
                 >
-                  [L] Leaderboard
+                  Leaderboard
                 </Button>
               </Link>
               {isAdmin && (
@@ -67,7 +67,7 @@ export function Header() {
                     size="sm"
                     className="text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
                   >
-                    [A] Admin
+                    Admin
                   </Button>
                 </Link>
               )}
@@ -99,11 +99,7 @@ export function Header() {
               >
                 <Menu className="h-4 w-4" />
               </PopoverTrigger>
-              <PopoverContent
-                align="end"
-                sideOffset={8}
-                className="w-48 p-1"
-              >
+              <PopoverContent align="end" sideOffset={8} className="w-48 p-1">
                 <nav className="flex flex-col">
                   <Link
                     href="/play"
