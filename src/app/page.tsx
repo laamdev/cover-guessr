@@ -1,65 +1,120 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useAuth, SignInButton } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { Header } from "@/components/header";
+import { Disc3, Trophy, Clock } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
+  const { isSignedIn } = useAuth();
+  const [hasActiveGame, setHasActiveGame] = useState(false);
+
+  useEffect(() => {
+    setHasActiveGame(!!localStorage.getItem("cover-guessr-game-id"));
+  }, []);
+  const albumCount = useQuery(api.albums.count);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <Header />
+      <main className="flex flex-1 flex-col items-center justify-center px-4">
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="mb-6 inline-block border border-dashed border-primary/40 px-3 py-1 text-xs uppercase tracking-widest text-primary">
+            / Music &middot; Time &middot; Memory /
+          </div>
+
+          <h1 className="mb-6 text-5xl font-bold tracking-tighter flex flex-col -space-y-4 sm:text-7xl">
+            <span>Cover</span>
+            <span className="text-primary font-mono text-2xl sm:text-4xl">
+              Guessr
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="mx-auto mb-10 max-w-md text-sm leading-relaxed text-muted-foreground">
+            Can you guess when an album was released just by looking at its
+            cover? Test your music knowledge and compete for the top spot.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+          <div className="mb-10 grid gap-px border border-dashed border-border bg-border sm:grid-cols-3">
+            <div className="flex flex-col items-center gap-2 bg-background p-6">
+              <Disc3 className="h-6 w-6 text-primary" />
+              <span className="text-xs font-medium uppercase tracking-wider">
+                See the Cover
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Album cover art is revealed
+              </span>
+            </div>
+            <div className="flex flex-col items-center gap-2 bg-background p-6">
+              <Clock className="h-6 w-6 text-primary" />
+              <span className="text-xs font-medium uppercase tracking-wider">
+                Guess the Year
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Slide to pick the release year
+              </span>
+            </div>
+            <div className="flex flex-col items-center gap-2 bg-background p-6">
+              <Trophy className="h-6 w-6 text-primary" />
+              <span className="text-xs font-medium uppercase tracking-wider">
+                Score Points
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Closer guess = more points
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-8 inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-1 border border-dashed border-border px-4 py-3 text-xs text-muted-foreground sm:px-6">
+            <span>
+              Albums:{" "}
+              <span className="font-bold text-foreground">
+                {albumCount ?? "..."}
+              </span>
+            </span>
+            <span className="text-border">|</span>
+            <span>
+              Credits:{" "}
+              <span className="font-bold text-foreground">100</span>
+            </span>
+            <span className="text-border">|</span>
+            <span>
+              Mode:{" "}
+              <span className="font-bold text-foreground">Survival</span>
+            </span>
+          </div>
+
+          <div className="flex justify-center">
+            {isSignedIn ? (
+              <Link href="/play">
+                <Button
+                  size="lg"
+                  className="text-sm uppercase tracking-wider px-8"
+                >
+                  {hasActiveGame ? "Continue Playing" : "Start Playing"}
+                </Button>
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <Button
+                  size="lg"
+                  className="text-sm uppercase tracking-wider px-8"
+                >
+                  Sign In to Play
+                </Button>
+              </SignInButton>
+            )}
+          </div>
         </div>
       </main>
-    </div>
+
+      <footer className="border-t border-dashed border-border py-4 text-center text-xs text-muted-foreground">
+        Cover Guessr &middot; Test your music knowledge
+      </footer>
+    </>
   );
 }
