@@ -9,7 +9,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "isolatedModules": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["node"]
   },
   "include": ["./**/*"],
   "exclude": ["./_generated"]

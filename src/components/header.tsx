@@ -78,7 +78,7 @@ export function Header() {
           ) : (
             <SignInButton mode="modal">
               <Button size="sm" className="text-xs uppercase tracking-wider">
-                [S] Sign In
+                Sign In
               </Button>
             </SignInButton>
           )}
