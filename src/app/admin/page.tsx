@@ -41,6 +41,7 @@ import {
   ImagePlus,
   X,
   Pencil,
+  Loader2,
 } from "lucide-react";
 import { useCoverUrl } from "@/lib/use-cover-url";
 
@@ -372,7 +373,7 @@ export default function AdminPage() {
               >
                 {uploading ? (
                   <>
-                    <Upload className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Uploading...
                   </>
                 ) : (
