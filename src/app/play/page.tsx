@@ -262,7 +262,10 @@ export default function PlayPage() {
                 )}
                 {resultAlbum && (
                   <p className="text-sm font-medium">
-                    {resultAlbum.artist} — {resultAlbum.title}
+                    {resultAlbum.title}
+                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+                      by {resultAlbum.artist}
+                    </span>
                   </p>
                 )}
                 <RoundResult

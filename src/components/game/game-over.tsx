@@ -92,9 +92,16 @@ export function GameOver({
               </span>
               <div className="flex-1 min-w-0">
                 <p className="truncate text-sm font-medium">
-                  {round.artist && round.title
-                    ? `${round.artist} — ${round.title}`
-                    : `Round ${i + 1}`}
+                  {round.artist && round.title ? (
+                    <>
+                      {round.title}
+                      <span className="ml-1 text-xs font-normal text-muted-foreground">
+                        by {round.artist}
+                      </span>
+                    </>
+                  ) : (
+                    `Round ${i + 1}`
+                  )}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Guessed {round.guess} &middot; Correct {round.correctYear}

@@ -449,10 +449,13 @@ export default function AdminPage() {
                       <div className="flex-1 min-w-0">
                         <Tooltip>
                           <TooltipTrigger className="block max-w-full truncate text-left text-sm font-medium">
-                            {album.artist} — {album.title}
+                            {album.title}
+                            <span className="ml-1 text-xs font-normal text-muted-foreground">
+                              by {album.artist}
+                            </span>
                           </TooltipTrigger>
                           <TooltipContent>
-                            {album.artist} — {album.title}
+                            {album.title} by {album.artist}
                           </TooltipContent>
                         </Tooltip>
                         <span className="text-xs text-primary">
@@ -563,7 +566,7 @@ export default function AdminPage() {
               Are you sure you want to delete{" "}
               <span className="font-medium text-foreground">
                 {deletingAlbum
-                  ? `${deletingAlbum.artist} — ${deletingAlbum.title}`
+                  ? `${deletingAlbum.title} by ${deletingAlbum.artist}`
                   : "this album"}
               </span>
               ? This action cannot be undone.
