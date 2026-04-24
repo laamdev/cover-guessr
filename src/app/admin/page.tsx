@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { useUploadFile } from "@convex-dev/r2/react";
+import { toast } from "sonner";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { Header } from "@/components/header";
@@ -69,7 +70,66 @@ type EditingAlbum = {
   title: string;
   artist: string;
   releaseYear: string;
+  coverKey: string;
+  newCoverFile: File | null;
+  newCoverPreview: string | null;
 };
+
+function EditCoverPicker({
+  editing,
+  onFileSelected,
+}: {
+  editing: EditingAlbum;
+  onFileSelected: (f: File | null) => void;
+}) {
+  const currentUrl = useCoverUrl(editing.coverKey);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const preview = editing.newCoverPreview ?? currentUrl;
+  return (
+    <div className="flex items-center gap-3">
+      {preview ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={preview}
+          alt="Cover preview"
+          className="h-20 w-20 shrink-0 object-cover"
+        />
+      ) : (
+        <div className="h-20 w-20 shrink-0 animate-pulse bg-muted" />
+      )}
+      <div className="flex flex-col gap-1">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => inputRef.current?.click()}
+        >
+          {editing.newCoverFile ? "Choose another" : "Replace"}
+        </Button>
+        {editing.newCoverFile && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              onFileSelected(null);
+              if (inputRef.current) inputRef.current.value = "";
+            }}
+          >
+            Keep current
+          </Button>
+        )}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => onFileSelected(e.target.files?.[0] ?? null)}
+      />
+    </div>
+  );
+}
 
 export default function AdminPage() {
   const { user, isLoaded } = useUser();
@@ -80,6 +140,7 @@ export default function AdminPage() {
   const addAlbum = useMutation(api.albums.add);
   const updateAlbum = useMutation(api.albums.update);
   const removeAlbum = useMutation(api.albums.remove);
+  const deleteCover = useMutation(api.r2.deleteObject);
   const uploadFile = useUploadFile(api.r2);
 
   const [title, setTitle] = useState("");
@@ -175,18 +236,26 @@ export default function AdminPage() {
     if (!file || !user) return;
 
     setUploading(true);
+    let uploadedKey: string | null = null;
     try {
-      const key = await uploadFile(file);
+      uploadedKey = await uploadFile(file);
       await addAlbum({
         title,
         artist,
         releaseYear: parseInt(releaseYear, 10),
-        coverKey: key,
+        coverKey: uploadedKey,
       });
+      toast.success(`Added "${title}" by ${artist}`);
       setTitle("");
       setArtist("");
       setReleaseYear("");
       clearFile();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Upload failed";
+      toast.error(message);
+      if (uploadedKey) {
+        await deleteCover({ key: uploadedKey }).catch(() => {});
+      }
     } finally {
       setUploading(false);
     }
@@ -195,14 +264,29 @@ export default function AdminPage() {
   const handleEditSave = async () => {
     if (!editing) return;
     setEditSaving(true);
+    let uploadedKey: string | null = null;
     try {
-      await updateAlbum({
+      if (editing.newCoverFile) {
+        uploadedKey = await uploadFile(editing.newCoverFile);
+      }
+      const result = await updateAlbum({
         id: editing.id,
         title: editing.title,
         artist: editing.artist,
         releaseYear: parseInt(editing.releaseYear, 10),
+        ...(uploadedKey ? { coverKey: uploadedKey } : {}),
       });
+      if (result?.previousCoverKey) {
+        await deleteCover({ key: result.previousCoverKey }).catch(() => {});
+      }
+      toast.success("Album updated");
       setEditing(null);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Update failed";
+      toast.error(message);
+      if (uploadedKey) {
+        await deleteCover({ key: uploadedKey }).catch(() => {});
+      }
     } finally {
       setEditSaving(false);
     }
@@ -475,6 +559,9 @@ export default function AdminPage() {
                             title: album.title,
                             artist: album.artist,
                             releaseYear: String(album.releaseYear),
+                            coverKey: album.coverKey,
+                            newCoverFile: null,
+                            newCoverPreview: null,
                           })
                         }
                       >
@@ -502,7 +589,12 @@ export default function AdminPage() {
       <Dialog
         open={editing !== null}
         onOpenChange={(open) => {
-          if (!open) setEditing(null);
+          if (!open) {
+            if (editing?.newCoverPreview) {
+              URL.revokeObjectURL(editing.newCoverPreview);
+            }
+            setEditing(null);
+          }
         }}
       >
         <DialogContent>
@@ -541,6 +633,22 @@ export default function AdminPage() {
                   }
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="text-xs uppercase tracking-wider">Cover Art</Label>
+                <EditCoverPicker
+                  editing={editing}
+                  onFileSelected={(f) => {
+                    if (editing.newCoverPreview) {
+                      URL.revokeObjectURL(editing.newCoverPreview);
+                    }
+                    setEditing({
+                      ...editing,
+                      newCoverFile: f,
+                      newCoverPreview: f ? URL.createObjectURL(f) : null,
+                    });
+                  }}
+                />
+              </div>
             </div>
           )}
           <DialogFooter>
@@ -548,7 +656,14 @@ export default function AdminPage() {
               Cancel
             </Button>
             <Button disabled={!canSaveEdit} onClick={handleEditSave}>
-              {editSaving ? "Saving..." : "Save Changes"}
+              {editSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

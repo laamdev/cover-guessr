@@ -69,11 +69,40 @@ export const update = mutation({
     title: v.string(),
     artist: v.string(),
     releaseYear: v.number(),
+    coverKey: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
-    const { id, ...fields } = args;
-    await ctx.db.patch(id, fields);
+    const { id, coverKey, ...fields } = args;
+    const existing = await ctx.db.get(id);
+    if (!existing) throw new Error("Album not found");
+
+    if (
+      existing.title !== args.title ||
+      existing.artist !== args.artist
+    ) {
+      const dup = await ctx.db
+        .query("albums")
+        .withIndex("by_artist_and_title", (q) =>
+          q.eq("artist", args.artist).eq("title", args.title),
+        )
+        .unique();
+      if (dup && dup._id !== id) {
+        throw new Error(
+          `Album "${args.title}" by ${args.artist} already exists`,
+        );
+      }
+    }
+
+    const previousCoverKey = existing.coverKey;
+    await ctx.db.patch(id, {
+      ...fields,
+      ...(coverKey ? { coverKey } : {}),
+    });
+    return {
+      previousCoverKey:
+        coverKey && coverKey !== previousCoverKey ? previousCoverKey : null,
+    };
   },
 });
 
