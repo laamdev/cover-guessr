@@ -261,12 +261,12 @@ export default function PlayPage() {
                   <CoverImage coverKey={resultAlbum.coverKey} />
                 )}
                 {resultAlbum && (
-                  <p className="text-sm font-medium">
-                    {resultAlbum.title}
-                    <span className="ml-1 text-xs font-normal text-muted-foreground">
+                  <div>
+                    <p className="text-sm font-medium">{resultAlbum.title}</p>
+                    <p className="text-xs font-normal text-muted-foreground">
                       by {resultAlbum.artist}
-                    </span>
-                  </p>
+                    </p>
+                  </div>
                 )}
                 <RoundResult
                   guess={game.rounds[game.rounds.length - 1]?.guess ?? 0}

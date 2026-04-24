@@ -448,9 +448,11 @@ export default function AdminPage() {
                       <AlbumCover coverKey={album.coverKey} />
                       <div className="flex-1 min-w-0">
                         <Tooltip>
-                          <TooltipTrigger className="block max-w-full truncate text-left text-sm font-medium">
-                            {album.title}
-                            <span className="ml-1 text-xs font-normal text-muted-foreground">
+                          <TooltipTrigger className="block max-w-full text-left">
+                            <span className="block truncate text-sm font-medium">
+                              {album.title}
+                            </span>
+                            <span className="block truncate text-xs font-normal text-muted-foreground">
                               by {album.artist}
                             </span>
                           </TooltipTrigger>
