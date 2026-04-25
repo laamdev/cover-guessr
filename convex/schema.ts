@@ -20,19 +20,26 @@ export default defineSchema({
     perfectGuesses: v.number(),
     closeGuesses: v.number(),
     currentAlbumId: v.optional(v.id("albums")),
-    rounds: v.array(
-      v.object({
-        albumId: v.id("albums"),
-        artist: v.optional(v.string()),
-        title: v.optional(v.string()),
-        guess: v.number(),
-        correctYear: v.number(),
-        diff: v.number(),
-      })
-    ),
+    albumOrder: v.array(v.id("albums")),
   })
     .index("by_user", ["userId"])
     .index("by_user_status", ["userId", "status"]),
+
+  gameRounds: defineTable({
+    gameId: v.id("games"),
+    roundNumber: v.number(),
+    albumId: v.id("albums"),
+    artist: v.string(),
+    title: v.string(),
+    guess: v.number(),
+    correctYear: v.number(),
+    diff: v.number(),
+  }).index("by_game", ["gameId", "roundNumber"]),
+
+  stats: defineTable({
+    key: v.string(),
+    value: v.number(),
+  }).index("by_key", ["key"]),
 
   scores: defineTable({
     userId: v.string(),
@@ -43,7 +50,10 @@ export default defineSchema({
     perfectGuesses: v.number(),
     closeGuesses: v.number(),
     creditsRemaining: v.number(),
+    // Denormalized tiebreaker rank: streak * 1e8 + perfectGuesses * 1e5 + creditsRemaining.
+    score: v.number(),
   })
-    .index("by_streak", ["streak"])
-    .index("by_user", ["userId"]),
+    .index("by_score", ["score"])
+    .index("by_user", ["userId"])
+    .index("by_user_score", ["userId", "score"]),
 });

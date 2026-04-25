@@ -1,31 +1,45 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 
 const STARTING_CREDITS = 100;
 const PERFECT_BONUS = 10;
 const CLOSE_THRESHOLD = 10;
+const MAX_GAME_LENGTH = 200;
 
 export const startGame = mutation({
-  args: {
-    userId: v.string(),
-  },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    // Full table scan: acceptable while the catalog is admin-curated.
+    // If the album count grows past a few thousand, switch to a numeric `seq`
+    // index + sampled random ids to avoid loading every doc on game start.
     const allAlbums = await ctx.db.query("albums").collect();
     if (allAlbums.length === 0) {
       throw new Error("No albums available.");
     }
 
-    const firstAlbum = allAlbums[Math.floor(Math.random() * allAlbums.length)];
+    // Partial Fisher-Yates: produces an unbiased uniform sample of the first
+    // `pickCount` ids without sorting the entire array.
+    const ids = allAlbums.map((a) => a._id);
+    const pickCount = Math.min(ids.length, MAX_GAME_LENGTH);
+    for (let i = 0; i < pickCount; i++) {
+      const j = i + Math.floor(Math.random() * (ids.length - i));
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+    }
+    const albumOrder = ids.slice(0, pickCount);
 
     return await ctx.db.insert("games", {
-      userId: args.userId,
+      userId: identity.subject,
       status: "in_progress",
       currentRound: 0,
       credits: STARTING_CREDITS,
       perfectGuesses: 0,
       closeGuesses: 0,
-      currentAlbumId: firstAlbum._id,
-      rounds: [],
+      currentAlbumId: albumOrder[0],
+      albumOrder,
     });
   },
 });
@@ -36,8 +50,12 @@ export const submitGuess = mutation({
     guess: v.number(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found");
+    if (game.userId !== identity.subject) throw new Error("Not authorized");
     if (game.status === "completed") throw new Error("Game already completed");
     if (!game.currentAlbumId) throw new Error("No current album");
 
@@ -52,28 +70,26 @@ export const submitGuess = mutation({
     if (isPerfect) newCredits += PERFECT_BONUS;
     newCredits = Math.max(0, newCredits);
 
-    const newRound = {
+    const newCurrentRound = game.currentRound + 1;
+    await ctx.db.insert("gameRounds", {
+      gameId: args.gameId,
+      roundNumber: newCurrentRound,
       albumId: game.currentAlbumId,
       artist: album.artist,
       title: album.title,
       guess: args.guess,
       correctYear: album.releaseYear,
       diff,
-    };
+    });
 
-    const updatedRounds = [...game.rounds, newRound];
     const newPerfect = game.perfectGuesses + (isPerfect ? 1 : 0);
     const newClose = game.closeGuesses + (isClose ? 1 : 0);
-    // Pick next album (no repeats)
-    let nextAlbumId = undefined;
+
+    let nextAlbumId: Id<"albums"> | undefined = undefined;
     let outOfAlbums = false;
     if (newCredits > 0) {
-      const usedIds = new Set(updatedRounds.map((r) => r.albumId));
-      const allAlbums = await ctx.db.query("albums").collect();
-      const available = allAlbums.filter((a) => !usedIds.has(a._id));
-      if (available.length > 0) {
-        nextAlbumId =
-          available[Math.floor(Math.random() * available.length)]._id;
+      if (newCurrentRound < game.albumOrder.length) {
+        nextAlbumId = game.albumOrder[newCurrentRound];
       } else {
         outOfAlbums = true;
       }
@@ -82,9 +98,8 @@ export const submitGuess = mutation({
     const isGameOver = newCredits <= 0 || outOfAlbums;
 
     await ctx.db.patch(args.gameId, {
-      rounds: updatedRounds,
       credits: newCredits,
-      currentRound: updatedRounds.length,
+      currentRound: newCurrentRound,
       perfectGuesses: newPerfect,
       closeGuesses: newClose,
       currentAlbumId: nextAlbumId,
@@ -95,10 +110,11 @@ export const submitGuess = mutation({
       diff,
       isPerfect,
       isClose,
+      guess: args.guess,
       correctYear: album.releaseYear,
       credits: newCredits,
       isGameOver,
-      streak: updatedRounds.length,
+      streak: newCurrentRound,
       perfectGuesses: newPerfect,
       closeGuesses: newClose,
     };
@@ -108,18 +124,39 @@ export const submitGuess = mutation({
 export const getGame = query({
   args: { gameId: v.id("games") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.gameId);
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
+    const game = await ctx.db.get(args.gameId);
+    if (!game || game.userId !== identity.subject) return null;
+    return game;
   },
 });
 
 export const getActiveGame = query({
-  args: { userId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return null;
     return await ctx.db
       .query("games")
       .withIndex("by_user_status", (q) =>
-        q.eq("userId", args.userId).eq("status", "in_progress")
+        q.eq("userId", identity.subject).eq("status", "in_progress")
       )
       .first();
   },
 });
+
+export const getGameRounds = query({
+  args: { gameId: v.id("games") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+    const game = await ctx.db.get(args.gameId);
+    if (!game || game.userId !== identity.subject) return [];
+    return await ctx.db
+      .query("gameRounds")
+      .withIndex("by_game", (q) => q.eq("gameId", args.gameId))
+      .collect();
+  },
+});
+

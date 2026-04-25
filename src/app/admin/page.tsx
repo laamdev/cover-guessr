@@ -269,16 +269,13 @@ export default function AdminPage() {
       if (editing.newCoverFile) {
         uploadedKey = await uploadFile(editing.newCoverFile);
       }
-      const result = await updateAlbum({
+      await updateAlbum({
         id: editing.id,
         title: editing.title,
         artist: editing.artist,
         releaseYear: parseInt(editing.releaseYear, 10),
         ...(uploadedKey ? { coverKey: uploadedKey } : {}),
       });
-      if (result?.previousCoverKey) {
-        await deleteCover({ key: result.previousCoverKey }).catch(() => {});
-      }
       toast.success("Album updated");
       setEditing(null);
     } catch (err) {

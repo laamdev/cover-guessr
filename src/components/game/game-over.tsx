@@ -3,19 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Skull, Flame, Target, Disc3 } from "lucide-react";
 import Link from "next/link";
-import type { Id } from "../../../convex/_generated/dataModel";
+import type { Doc } from "../../../convex/_generated/dataModel";
 
-type Round = {
-  albumId: Id<"albums">;
-  artist?: string;
-  title?: string;
-  guess: number;
-  correctYear: number;
-  diff: number;
-};
+type Round = Doc<"gameRounds">;
 
 export function GameOver({
   game,
+  rounds,
   onPlayAgain,
 }: {
   game: {
@@ -23,12 +17,12 @@ export function GameOver({
     currentRound: number;
     perfectGuesses: number;
     closeGuesses: number;
-    rounds: Round[];
   };
+  rounds: Round[];
   onPlayAgain: () => void;
 }) {
-  const streak = game.rounds.length;
-  const totalDiff = game.rounds.reduce((sum, r) => sum + r.diff, 0);
+  const streak = rounds.length;
+  const totalDiff = rounds.reduce((sum, r) => sum + r.diff, 0);
   const avgError = streak > 0 ? (totalDiff / streak).toFixed(1) : "0";
 
   return (
@@ -82,9 +76,9 @@ export function GameOver({
           Round History
         </div>
         <div className="max-h-64 overflow-y-auto">
-          {game.rounds.map((round, i) => (
+          {rounds.map((round, i) => (
             <div
-              key={i}
+              key={round._id}
               className="flex items-center gap-3 border-b border-dashed border-border px-3 py-2.5 last:border-b-0 sm:gap-4 sm:px-4"
             >
               <span className="w-6 shrink-0 text-xs font-bold text-muted-foreground">

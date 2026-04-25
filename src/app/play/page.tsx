@@ -22,6 +22,7 @@ type GuessResult = {
   diff: number;
   isPerfect: boolean;
   isClose: boolean;
+  guess: number;
   correctYear: number;
   credits: number;
   isGameOver: boolean;
@@ -46,6 +47,10 @@ export default function PlayPage() {
   });
 
   const game = useQuery(api.games.getGame, gameId ? { gameId } : "skip");
+  const rounds = useQuery(
+    api.games.getGameRounds,
+    gameId ? { gameId } : "skip"
+  );
 
   // Determine phase from game state on load/refresh
   const [phase, setPhase] = useState<"lobby" | "guessing" | "result" | "over">(
@@ -106,7 +111,7 @@ export default function PlayPage() {
 
   const handleStartGame = async () => {
     if (!user) return;
-    const id = await startGame({ userId: user.id });
+    const id = await startGame({});
     setGameId(id);
     setPhase("guessing");
     setLastResult(null);
@@ -127,18 +132,13 @@ export default function PlayPage() {
 
     if (lastResult.isGameOver) {
       await saveScore({
-        userId: user.id,
+        gameId: gameId!,
         userName:
           user.fullName ??
           user.username ??
           user.primaryEmailAddress?.emailAddress ??
           "Anonymous",
         userImage: user.imageUrl,
-        gameId: gameId!,
-        streak: lastResult.streak,
-        perfectGuesses: lastResult.perfectGuesses,
-        closeGuesses: lastResult.closeGuesses,
-        creditsRemaining: lastResult.credits,
       });
       setPhase("over");
       localStorage.removeItem(STORAGE_KEY);
@@ -269,7 +269,7 @@ export default function PlayPage() {
                   </div>
                 )}
                 <RoundResult
-                  guess={game.rounds[game.rounds.length - 1]?.guess ?? 0}
+                  guess={lastResult.guess}
                   correctYear={lastResult.correctYear}
                   diff={lastResult.diff}
                   isPerfect={lastResult.isPerfect}
@@ -281,9 +281,10 @@ export default function PlayPage() {
           </div>
         )}
 
-        {phase === "over" && game && (
+        {phase === "over" && game && rounds && (
           <GameOver
             game={game}
+            rounds={rounds}
             onPlayAgain={handlePlayAgain}
           />
         )}
