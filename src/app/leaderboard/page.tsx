@@ -38,7 +38,7 @@ export default function LeaderboardPage() {
         {scores && scores.length > 0 && (
           <div className="overflow-x-auto border border-dashed border-border">
             {/* Table header */}
-            <div className="flex min-w-[440px] items-center gap-4 border-b border-dashed border-border px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-4 border-b border-dashed border-border px-4 py-2 text-xs uppercase tracking-wider text-muted-foreground">
               <span className="w-8 text-center">#</span>
               <span className="flex-1">Player</span>
               <span className="w-16 text-right">Streak</span>
@@ -48,7 +48,7 @@ export default function LeaderboardPage() {
             {scores.map((entry, i) => (
               <div
                 key={entry._id}
-                className={`flex min-w-[440px] items-center gap-4 border-b border-dashed border-border px-4 py-3 transition-colors hover:bg-muted/30 last:border-b-0 ${
+                className={`flex items-center gap-4 border-b border-dashed border-border px-4 py-3 transition-colors hover:bg-muted/30 last:border-b-0 ${
                   i < 3 ? "bg-primary/5" : ""
                 }`}
               >
@@ -77,7 +77,7 @@ export default function LeaderboardPage() {
                   <p className="truncate text-sm font-medium">
                     {entry.userName}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="truncate text-xs text-muted-foreground">
                     {entry.closeGuesses} close &middot;{" "}
                     {entry.creditsRemaining} credits left
                   </p>
