@@ -9,6 +9,7 @@
  */
 
 import type * as albums from "../albums.js";
+import type * as crons from "../crons.js";
 import type * as daily from "../daily.js";
 import type * as games from "../games.js";
 import type * as http from "../http.js";
@@ -23,6 +24,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   albums: typeof albums;
+  crons: typeof crons;
   daily: typeof daily;
   games: typeof games;
   http: typeof http;

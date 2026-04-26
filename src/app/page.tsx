@@ -60,6 +60,8 @@ export default function Home() {
   const [hasActiveGame, setHasActiveGame] = useState(false);
 
   useEffect(() => {
+    // Read localStorage on mount; lazy initializer can't (SSR-safe).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasActiveGame(!!localStorage.getItem("cover-guessr-game-id"));
   }, []);
   const albumCount = useQuery(api.albums.count);
@@ -68,12 +70,10 @@ export default function Home() {
     <div className="flex h-[100dvh] flex-col">
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: jsonLdString(webAppJsonLd) }}
       />
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: jsonLdString(gameJsonLd) }}
       />
       <Header />

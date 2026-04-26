@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -69,12 +69,19 @@ export default function PlayPage() {
   const [albumCache, setAlbumCache] = useState<Map<string, Doc<"albums">>>(
     new Map()
   );
-  const [hasRestored, setHasRestored] = useState(false);
+  // Run-once guards live in refs — they gate side-effects, not render.
+  const restoredRef = useRef(false);
+  const claimedRef = useRef(false);
+  const savedRef = useRef(false);
 
-  // Restore phase from game state after Convex loads
+  // Restore phase from game state after Convex loads. Setting state from
+  // a server-driven subscription is the documented pattern in the React
+  // docs; the lint rule's heuristic doesn't distinguish this case from
+  // spurious sync. The ref guard ensures it runs exactly once per mount.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    if (hasRestored || !game) return;
-    setHasRestored(true);
+    if (restoredRef.current || !game) return;
+    restoredRef.current = true;
     if (game.status === "completed") {
       // Signed-in users already had their score saved inline at game over,
       // so a stale completed game just means "go back to lobby". Guests
@@ -89,7 +96,8 @@ export default function PlayPage() {
     } else if (game.status === "in_progress") {
       setPhase("guessing");
     }
-  }, [game, hasRestored, isSignedIn]);
+  }, [game, isSignedIn]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Persist gameId to localStorage
   useEffect(() => {
@@ -131,7 +139,7 @@ export default function PlayPage() {
     setPhase("guessing");
     setLastResult(null);
     setAlbumCache(new Map());
-    setHasRestored(true);
+    restoredRef.current = true;
   };
 
   const handleGuess = async (year: number) => {
@@ -171,24 +179,26 @@ export default function PlayPage() {
   };
 
   // Claim a guest game once the user signs in mid-flow (or right after game over).
-  const [hasClaimed, setHasClaimed] = useState(false);
   useEffect(() => {
-    if (!isSignedIn || !gameId || !clientId || hasClaimed) return;
+    if (!isSignedIn || !gameId || !clientId || claimedRef.current) return;
     if (!game || game.userId) return;
-    setHasClaimed(true);
+    claimedRef.current = true;
     claimGame({ gameId, clientId }).catch((err) => {
       console.error("Failed to claim game", err);
-      setHasClaimed(false);
+      claimedRef.current = false;
     });
-  }, [isSignedIn, gameId, clientId, game, hasClaimed, claimGame]);
+  }, [isSignedIn, gameId, clientId, game, claimGame]);
 
   // After a guest signs in on the GameOver screen, save the score.
+  // `savedRef` gates the effect against re-firing; the visual flag is set
+  // from the resolved promise (allowed by react-hooks/set-state-in-effect
+  // since it runs in an async callback, not the synchronous effect body).
   const [hasSavedScore, setHasSavedScore] = useState(false);
   useEffect(() => {
-    if (phase !== "over" || hasSavedScore) return;
+    if (phase !== "over" || savedRef.current) return;
     if (!isSignedIn || !user || !gameId || !game) return;
     if (game.userId !== user.id) return; // wait until the claim has landed
-    setHasSavedScore(true);
+    savedRef.current = true;
     saveScore({
       gameId,
       userName:
@@ -197,11 +207,13 @@ export default function PlayPage() {
         user.primaryEmailAddress?.emailAddress ??
         "Anonymous",
       userImage: user.imageUrl,
-    }).catch((err) => {
-      console.error("Failed to save score", err);
-      setHasSavedScore(false);
-    });
-  }, [phase, isSignedIn, user, gameId, game, hasSavedScore, saveScore]);
+    })
+      .then(() => setHasSavedScore(true))
+      .catch((err) => {
+        console.error("Failed to save score", err);
+        savedRef.current = false;
+      });
+  }, [phase, isSignedIn, user, gameId, game, saveScore]);
 
   const handlePlayAgain = () => {
     setPhase("lobby");
@@ -209,8 +221,9 @@ export default function PlayPage() {
     setLastResult(null);
     setResultAlbum(null);
     setAlbumCache(new Map());
-    setHasRestored(true);
-    setHasClaimed(false);
+    restoredRef.current = true;
+    claimedRef.current = false;
+    savedRef.current = false;
     setHasSavedScore(false);
   };
 

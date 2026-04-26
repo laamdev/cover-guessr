@@ -20,6 +20,10 @@ export function useClientId(): string | null {
       id = generateId();
       localStorage.setItem(STORAGE_KEY, id);
     }
+    // Read browser-only state (localStorage) on mount, then publish to React.
+    // The useState lazy initializer can't access localStorage during SSR, so
+    // this sync via effect is the documented escape hatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setClientId(id);
   }, []);
 

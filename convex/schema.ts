@@ -97,7 +97,8 @@ export default defineSchema({
   })
     .index("by_user_and_date", ["userId", "date"])
     .index("by_client_and_date", ["clientId", "date"])
-    .index("by_leaderboard", ["leaderboardDate", "score"]),
+    .index("by_leaderboard", ["leaderboardDate", "score"])
+    .index("by_status_and_date", ["status", "date"]),
 
   dailyRounds: defineTable({
     entryId: v.id("dailyEntries"),

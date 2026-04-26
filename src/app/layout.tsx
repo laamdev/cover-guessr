@@ -112,7 +112,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col overflow-x-clip bg-background text-foreground">
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: jsonLdString(websiteJsonLd) }}
         />
         <Providers>{children}</Providers>

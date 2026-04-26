@@ -1,10 +1,12 @@
 import { v } from "convex/values";
 import {
+  internalMutation,
   mutation,
   query,
   type MutationCtx,
   type QueryCtx,
 } from "./_generated/server";
+import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 
 const DAILY_LENGTH = 10;
@@ -196,6 +198,11 @@ async function getOrCreateTodayChallenge(
 
 // Idempotent: if the caller already has an entry today, returns it. Otherwise
 // creates challenge (if needed) and a fresh in-progress entry.
+//
+// No explicit lock needed for double-click protection: Convex tracks index
+// range reads in the OCC read set, so two concurrent `start` calls both
+// reading `findEntryFor` (empty) and both inserting will conflict — the
+// second commit retries, sees the first insert via index, and returns it.
 export const start = mutation({
   args: {
     clientId: v.optional(v.string()),
@@ -478,6 +485,54 @@ export const leaderboard = query({
       grid: r.grid,
       completedAt: r.completedAt,
     }));
+  },
+});
+
+// Sweep abandoned guest entries — anything in_progress whose date is older
+// than yesterday is unreachable by the player (the page won't resume past
+// midnight UTC) so it just bloats storage. Self-reschedules until done.
+const ABANDON_GRACE_DAYS = 2;
+const CLEANUP_BATCH_SIZE = 100;
+
+export const cleanupAbandoned = internalMutation({
+  args: { batchSize: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const batch = args.batchSize ?? CLEANUP_BATCH_SIZE;
+    const today = todayUtc();
+    const cutoff = (() => {
+      const d = new Date(today + "T00:00:00Z");
+      d.setUTCDate(d.getUTCDate() - ABANDON_GRACE_DAYS);
+      return d.toISOString().slice(0, 10);
+    })();
+
+    const stale = await ctx.db
+      .query("dailyEntries")
+      .withIndex("by_status_and_date", (q) =>
+        q.eq("status", "in_progress").lt("date", cutoff),
+      )
+      .take(batch);
+
+    for (const entry of stale) {
+      // Cascade-delete the entry's rounds first so we don't leave orphans.
+      // 9 rounds max (10th round flips status to completed), so a single
+      // .collect() is bounded.
+      const rounds = await ctx.db
+        .query("dailyRounds")
+        .withIndex("by_entry", (q) => q.eq("entryId", entry._id))
+        .collect();
+      for (const r of rounds) await ctx.db.delete(r._id);
+      await ctx.db.delete(entry._id);
+    }
+
+    if (stale.length === batch) {
+      // More to do — drop into a fresh transaction so we don't blow the
+      // per-mutation read/write budget on a backlog.
+      await ctx.scheduler.runAfter(0, internal.daily.cleanupAbandoned, {
+        batchSize: batch,
+      });
+    }
+
+    return stale.length;
   },
 });
 
