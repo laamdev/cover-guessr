@@ -109,7 +109,7 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${silkscreen.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="min-h-full flex flex-col overflow-x-clip bg-background text-foreground">
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
