@@ -5,7 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
-import { Disc3, Trophy, Clock } from "lucide-react";
+import { Disc3, Trophy, Clock, Calendar } from "lucide-react";
 import Link from "next/link";
 import type { VideoGame, WebApplication, WithContext } from "schema-dts";
 import {
@@ -145,13 +145,23 @@ export default function Home() {
       </main>
 
       <footer className="shrink-0 border-t border-dashed border-border bg-background p-4">
-        <div className="mx-auto flex max-w-2xl justify-center">
-          <Link href="/play" className="w-full sm:w-auto">
+        <div className="mx-auto flex max-w-2xl flex-col gap-2 sm:flex-row sm:justify-center">
+          <Link href="/daily" className="w-full sm:w-auto">
             <Button
               size="lg"
               className="w-full text-sm uppercase tracking-wider sm:px-8"
             >
-              {hasActiveGame ? "Continue Playing" : "Start Playing"}
+              <Calendar className="mr-2 h-4 w-4" />
+              Today&apos;s Daily
+            </Button>
+          </Link>
+          <Link href="/play" className="w-full sm:w-auto">
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full text-sm uppercase tracking-wider sm:px-8"
+            >
+              {hasActiveGame ? "Continue Survival" : "Survival Mode"}
             </Button>
           </Link>
         </div>

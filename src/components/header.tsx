@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Menu,
   LogIn,
+  Calendar,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -40,6 +41,15 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 sm:flex">
+          <Link href="/daily">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
+            >
+              Daily
+            </Button>
+          </Link>
           <Link href="/play">
             <Button
               variant="ghost"
@@ -101,6 +111,14 @@ export function Header() {
             </PopoverTrigger>
             <PopoverContent align="end" sideOffset={8} className="w-48 p-1">
               <nav className="flex flex-col">
+                <Link
+                  href="/daily"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Daily
+                </Link>
                 <Link
                   href="/play"
                   onClick={() => setOpen(false)}
