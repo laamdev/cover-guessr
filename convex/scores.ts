@@ -21,7 +21,11 @@ export const saveScore = mutation({
 
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found");
-    if (game.userId !== identity.subject) throw new Error("Not authorized");
+    if (game.userId !== identity.subject) {
+      // Either the game belongs to a different user, or it's still
+      // owned by a guest clientId and hasn't been claimed yet.
+      throw new Error("Game must be claimed before saving a score");
+    }
     if (game.status !== "completed") throw new Error("Game not completed");
 
     const existing = await ctx.db

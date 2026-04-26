@@ -1,17 +1,51 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import type { Id } from "./_generated/dataModel";
+import {
+  mutation,
+  query,
+  type MutationCtx,
+  type QueryCtx,
+} from "./_generated/server";
+import type { Doc, Id } from "./_generated/dataModel";
 
 const STARTING_CREDITS = 100;
 const PERFECT_BONUS = 10;
 const CLOSE_THRESHOLD = 10;
 const MAX_GAME_LENGTH = 200;
 
+type Caller = {
+  userId: string | null;
+  clientId: string | null;
+};
+
+async function getCaller(
+  ctx: MutationCtx | QueryCtx,
+  args: { clientId?: string },
+): Promise<Caller> {
+  const identity = await ctx.auth.getUserIdentity();
+  return {
+    userId: identity?.subject ?? null,
+    clientId: args.clientId ?? null,
+  };
+}
+
+// Returns true if the caller is allowed to act on this game, via either
+// matching userId (signed in, claimed) or matching clientId (guest, or
+// signed-in user mid-claim).
+function callerOwnsGame(game: Doc<"games">, caller: Caller): boolean {
+  if (caller.userId && game.userId === caller.userId) return true;
+  if (caller.clientId && game.clientId === caller.clientId) return true;
+  return false;
+}
+
 export const startGame = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+  args: {
+    clientId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const caller = await getCaller(ctx, args);
+    if (!caller.userId && !caller.clientId) {
+      throw new Error("Not authenticated and no clientId provided");
+    }
 
     // Full table scan: acceptable while the catalog is admin-curated.
     // If the album count grows past a few thousand, switch to a numeric `seq`
@@ -31,8 +65,10 @@ export const startGame = mutation({
     }
     const albumOrder = ids.slice(0, pickCount);
 
+    // Prefer the signed-in identity. Guests get tagged with their clientId.
     return await ctx.db.insert("games", {
-      userId: identity.subject,
+      userId: caller.userId ?? undefined,
+      clientId: caller.userId ? undefined : caller.clientId ?? undefined,
       status: "in_progress",
       currentRound: 0,
       credits: STARTING_CREDITS,
@@ -48,14 +84,13 @@ export const submitGuess = mutation({
   args: {
     gameId: v.id("games"),
     guess: v.number(),
+    clientId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
+    const caller = await getCaller(ctx, args);
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found");
-    if (game.userId !== identity.subject) throw new Error("Not authorized");
+    if (!callerOwnsGame(game, caller)) throw new Error("Not authorized");
     if (game.status === "completed") throw new Error("Game already completed");
     if (!game.currentAlbumId) throw new Error("No current album");
 
@@ -121,42 +156,72 @@ export const submitGuess = mutation({
   },
 });
 
-export const getGame = query({
-  args: { gameId: v.id("games") },
+// Claim a guest game for the now-signed-in user. Idempotent.
+export const claimGame = mutation({
+  args: { gameId: v.id("games"), clientId: v.string() },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
+    if (!identity) throw new Error("Must be signed in to claim a game");
+
     const game = await ctx.db.get(args.gameId);
-    if (!game || game.userId !== identity.subject) return null;
+    if (!game) return null;
+    if (game.userId === identity.subject) return game._id;
+    if (game.clientId !== args.clientId) {
+      throw new Error("Not authorized to claim this game");
+    }
+
+    await ctx.db.patch(args.gameId, {
+      userId: identity.subject,
+      clientId: undefined,
+    });
+    return args.gameId;
+  },
+});
+
+export const getGame = query({
+  args: { gameId: v.id("games"), clientId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const caller = await getCaller(ctx, args);
+    const game = await ctx.db.get(args.gameId);
+    if (!game || !callerOwnsGame(game, caller)) return null;
     return game;
   },
 });
 
 export const getActiveGame = query({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-    return await ctx.db
-      .query("games")
-      .withIndex("by_user_status", (q) =>
-        q.eq("userId", identity.subject).eq("status", "in_progress")
-      )
-      .first();
+  args: { clientId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const caller = await getCaller(ctx, args);
+    if (caller.userId) {
+      const userGame = await ctx.db
+        .query("games")
+        .withIndex("by_user_status", (q) =>
+          q.eq("userId", caller.userId!).eq("status", "in_progress"),
+        )
+        .first();
+      if (userGame) return userGame;
+    }
+    if (caller.clientId) {
+      return await ctx.db
+        .query("games")
+        .withIndex("by_client_status", (q) =>
+          q.eq("clientId", caller.clientId!).eq("status", "in_progress"),
+        )
+        .first();
+    }
+    return null;
   },
 });
 
 export const getGameRounds = query({
-  args: { gameId: v.id("games") },
+  args: { gameId: v.id("games"), clientId: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
+    const caller = await getCaller(ctx, args);
     const game = await ctx.db.get(args.gameId);
-    if (!game || game.userId !== identity.subject) return [];
+    if (!game || !callerOwnsGame(game, caller)) return [];
     return await ctx.db
       .query("gameRounds")
       .withIndex("by_game", (q) => q.eq("gameId", args.gameId))
       .collect();
   },
 });
-

@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Skull, Flame, Target, Disc3 } from "lucide-react";
+import { Skull, Flame, Target, Disc3, Trophy, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { SignInButton } from "@clerk/nextjs";
 import type { Doc } from "../../../convex/_generated/dataModel";
 
 type Round = Doc<"gameRounds">;
@@ -11,6 +12,8 @@ export function GameOver({
   game,
   rounds,
   onPlayAgain,
+  isGuest = false,
+  scoreSaved = false,
 }: {
   game: {
     credits: number;
@@ -20,6 +23,8 @@ export function GameOver({
   };
   rounds: Round[];
   onPlayAgain: () => void;
+  isGuest?: boolean;
+  scoreSaved?: boolean;
 }) {
   const streak = rounds.length;
   const totalDiff = rounds.reduce((sum, r) => sum + r.diff, 0);
@@ -69,6 +74,35 @@ export function GameOver({
       <div className="text-center text-xs text-muted-foreground">
         Average error: {avgError} years
       </div>
+
+      {/* Guest sign-in interstitial */}
+      {isGuest && streak > 0 && (
+        <div className="border border-dashed border-primary/40 bg-primary/5 p-4 text-center">
+          <Trophy className="mx-auto mb-2 h-5 w-5 text-primary" />
+          <p className="text-sm font-medium">
+            Save your {streak}-round streak to the leaderboard
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Sign in to keep your score and compete with other players.
+          </p>
+          <SignInButton mode="modal">
+            <Button
+              size="lg"
+              className="mt-3 w-full uppercase tracking-wider"
+            >
+              Sign In to Save
+            </Button>
+          </SignInButton>
+        </div>
+      )}
+
+      {/* Score saved confirmation */}
+      {scoreSaved && (
+        <div className="flex items-center justify-center gap-2 border border-dashed border-primary/40 bg-primary/5 p-3 text-sm text-primary">
+          <CheckCircle2 className="h-4 w-4" />
+          <span>Saved to leaderboard</span>
+        </div>
+      )}
 
       {/* Round history */}
       <div className="border border-dashed border-border">

@@ -13,7 +13,8 @@ export default defineSchema({
     .index("by_artist_and_title", ["artist", "title"]),
 
   games: defineTable({
-    userId: v.string(),
+    userId: v.optional(v.string()),
+    clientId: v.optional(v.string()),
     status: v.union(v.literal("in_progress"), v.literal("completed")),
     currentRound: v.number(),
     credits: v.number(),
@@ -23,7 +24,9 @@ export default defineSchema({
     albumOrder: v.array(v.id("albums")),
   })
     .index("by_user", ["userId"])
-    .index("by_user_status", ["userId", "status"]),
+    .index("by_user_status", ["userId", "status"])
+    .index("by_client", ["clientId"])
+    .index("by_client_status", ["clientId", "status"]),
 
   gameRounds: defineTable({
     gameId: v.id("games"),

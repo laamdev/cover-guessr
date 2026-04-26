@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   description:
     "See the top Cover Guessr players — highest scores, longest streaks, and the sharpest album-cover memories.",
   alternates: { canonical: "/leaderboard" },
-  robots: { index: false, follow: false },
   openGraph: {
     title: `Leaderboard · ${SITE_NAME}`,
     description:

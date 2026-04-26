@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth, SignInButton } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,6 @@ const gameJsonLd: WithContext<VideoGame> = {
 };
 
 export default function Home() {
-  const { isSignedIn } = useAuth();
   const [hasActiveGame, setHasActiveGame] = useState(false);
 
   useEffect(() => {
@@ -148,25 +146,14 @@ export default function Home() {
 
       <footer className="shrink-0 border-t border-dashed border-border bg-background p-4">
         <div className="mx-auto flex max-w-2xl justify-center">
-          {isSignedIn ? (
-            <Link href="/play" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="w-full text-sm uppercase tracking-wider sm:px-8"
-              >
-                {hasActiveGame ? "Continue Playing" : "Start Playing"}
-              </Button>
-            </Link>
-          ) : (
-            <SignInButton mode="modal">
-              <Button
-                size="lg"
-                className="w-full text-sm uppercase tracking-wider sm:w-auto sm:px-8"
-              >
-                Sign In to Play
-              </Button>
-            </SignInButton>
-          )}
+          <Link href="/play" className="w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="w-full text-sm uppercase tracking-wider sm:px-8"
+            >
+              {hasActiveGame ? "Continue Playing" : "Start Playing"}
+            </Button>
+          </Link>
         </div>
       </footer>
     </div>

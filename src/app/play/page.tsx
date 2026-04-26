@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id, Doc } from "../../../convex/_generated/dataModel";
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Zap, Target, Flame } from "lucide-react";
+import { useClientId } from "@/lib/use-client-id";
 
 const STARTING_CREDITS = 100;
 const STORAGE_KEY = "cover-guessr-game-id";
@@ -33,10 +34,13 @@ type GuessResult = {
 
 export default function PlayPage() {
   const { user } = useUser();
+  const { isSignedIn } = useAuth();
+  const clientId = useClientId();
   const albumCount = useQuery(api.albums.count);
   const yearRange = useQuery(api.albums.yearRange);
   const startGame = useMutation(api.games.startGame);
   const submitGuess = useMutation(api.games.submitGuess);
+  const claimGame = useMutation(api.games.claimGame);
   const saveScore = useMutation(api.scores.saveScore);
 
   // Restore gameId from localStorage
@@ -46,11 +50,15 @@ export default function PlayPage() {
     return stored ? (stored as Id<"games">) : null;
   });
 
-  const game = useQuery(api.games.getGame, gameId ? { gameId } : "skip");
-  const rounds = useQuery(
-    api.games.getGameRounds,
-    gameId ? { gameId } : "skip"
-  );
+  // Wait until we know auth state AND have a clientId, then always pass both
+  // so the query can match the game by user OR clientId. This lets a freshly
+  // signed-in user still see their guest game until claimGame lands.
+  const queryArgs =
+    gameId && isSignedIn !== undefined && clientId
+      ? { gameId, clientId }
+      : "skip";
+  const game = useQuery(api.games.getGame, queryArgs);
+  const rounds = useQuery(api.games.getGameRounds, queryArgs);
 
   // Determine phase from game state on load/refresh
   const [phase, setPhase] = useState<"lobby" | "guessing" | "result" | "over">(
@@ -68,13 +76,20 @@ export default function PlayPage() {
     if (hasRestored || !game) return;
     setHasRestored(true);
     if (game.status === "completed") {
-      setPhase("lobby");
-      setGameId(null);
-      localStorage.removeItem(STORAGE_KEY);
+      // Signed-in users already had their score saved inline at game over,
+      // so a stale completed game just means "go back to lobby". Guests
+      // need to stay on the over screen so they can still sign in to save.
+      if (isSignedIn) {
+        setPhase("lobby");
+        setGameId(null);
+        localStorage.removeItem(STORAGE_KEY);
+      } else {
+        setPhase("over");
+      }
     } else if (game.status === "in_progress") {
       setPhase("guessing");
     }
-  }, [game, hasRestored]);
+  }, [game, hasRestored, isSignedIn]);
 
   // Persist gameId to localStorage
   useEffect(() => {
@@ -110,8 +125,8 @@ export default function PlayPage() {
           : null);
 
   const handleStartGame = async () => {
-    if (!user) return;
-    const id = await startGame({});
+    if (!clientId) return;
+    const id = await startGame({ clientId });
     setGameId(id);
     setPhase("guessing");
     setLastResult(null);
@@ -120,34 +135,73 @@ export default function PlayPage() {
   };
 
   const handleGuess = async (year: number) => {
-    if (!gameId || !currentAlbum) return;
+    if (!gameId || !currentAlbum || !clientId) return;
     setResultAlbum(currentAlbum);
-    const result = await submitGuess({ gameId, guess: year });
+    const result = await submitGuess({ gameId, guess: year, clientId });
     setLastResult(result);
     setPhase("result");
   };
 
   const handleNext = async () => {
-    if (!lastResult || !game || !user) return;
+    if (!lastResult || !game) return;
 
     if (lastResult.isGameOver) {
-      await saveScore({
-        gameId: gameId!,
-        userName:
-          user.fullName ??
-          user.username ??
-          user.primaryEmailAddress?.emailAddress ??
-          "Anonymous",
-        userImage: user.imageUrl,
-      });
+      // Signed-in users save immediately and clear the game-id stash.
+      // Guests keep gameId in localStorage so a reload during the sign-in
+      // flow doesn't lose the score they just earned.
+      if (isSignedIn && user) {
+        await saveScore({
+          gameId: gameId!,
+          userName:
+            user.fullName ??
+            user.username ??
+            user.primaryEmailAddress?.emailAddress ??
+            "Anonymous",
+          userImage: user.imageUrl,
+        });
+        setHasSavedScore(true);
+        localStorage.removeItem(STORAGE_KEY);
+      }
       setPhase("over");
-      localStorage.removeItem(STORAGE_KEY);
     } else {
       setPhase("guessing");
       setLastResult(null);
       setResultAlbum(null);
     }
   };
+
+  // Claim a guest game once the user signs in mid-flow (or right after game over).
+  const [hasClaimed, setHasClaimed] = useState(false);
+  useEffect(() => {
+    if (!isSignedIn || !gameId || !clientId || hasClaimed) return;
+    if (!game || game.userId) return;
+    setHasClaimed(true);
+    claimGame({ gameId, clientId }).catch((err) => {
+      console.error("Failed to claim game", err);
+      setHasClaimed(false);
+    });
+  }, [isSignedIn, gameId, clientId, game, hasClaimed, claimGame]);
+
+  // After a guest signs in on the GameOver screen, save the score.
+  const [hasSavedScore, setHasSavedScore] = useState(false);
+  useEffect(() => {
+    if (phase !== "over" || hasSavedScore) return;
+    if (!isSignedIn || !user || !gameId || !game) return;
+    if (game.userId !== user.id) return; // wait until the claim has landed
+    setHasSavedScore(true);
+    saveScore({
+      gameId,
+      userName:
+        user.fullName ??
+        user.username ??
+        user.primaryEmailAddress?.emailAddress ??
+        "Anonymous",
+      userImage: user.imageUrl,
+    }).catch((err) => {
+      console.error("Failed to save score", err);
+      setHasSavedScore(false);
+    });
+  }, [phase, isSignedIn, user, gameId, game, hasSavedScore, saveScore]);
 
   const handlePlayAgain = () => {
     setPhase("lobby");
@@ -156,6 +210,8 @@ export default function PlayPage() {
     setResultAlbum(null);
     setAlbumCache(new Map());
     setHasRestored(true);
+    setHasClaimed(false);
+    setHasSavedScore(false);
   };
 
   const credits = lastResult?.credits ?? game?.credits ?? STARTING_CREDITS;
@@ -203,7 +259,9 @@ export default function PlayPage() {
                 onClick={handleStartGame}
                 size="lg"
                 className="w-full uppercase tracking-wider"
-                disabled={albumCount === undefined || albumCount === 0}
+                disabled={
+                  albumCount === undefined || albumCount === 0 || !clientId
+                }
               >
                 {gameId ? "Continue Game" : "Start Game"}
               </Button>
@@ -295,6 +353,8 @@ export default function PlayPage() {
               game={game}
               rounds={rounds}
               onPlayAgain={handlePlayAgain}
+              isGuest={!isSignedIn}
+              scoreSaved={hasSavedScore && !!game.userId}
             />
           </div>
         )}
