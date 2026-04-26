@@ -1,0 +1,15 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+  description: "Sign in to Cover Guessr to start playing and save your scores.",
+  robots: { index: false, follow: true },
+};
+
+export default function SignInLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return children;
+}
