@@ -77,7 +77,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: jsonLdString(gameJsonLd) }}
       />
       <Header />
-      <main className="flex flex-1 min-h-0 flex-col overflow-y-auto p-4">
+      <main className="flex flex-1 min-h-0 min-w-0 flex-col overflow-y-auto p-4">
         <div className="m-auto max-w-2xl text-center">
           <div className="mb-6 inline-block border border-dashed border-primary/40 px-3 py-1 text-xs uppercase tracking-widest text-primary">
             / Music &middot; Time &middot; Memory /

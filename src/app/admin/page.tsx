@@ -315,7 +315,7 @@ export default function AdminPage() {
     return (
       <>
         <Header />
-        <main className="mx-auto max-w-3xl px-4 py-8">
+        <main className="mx-auto w-full min-w-0 max-w-3xl px-4 py-8">
           <p className="text-sm text-muted-foreground">Loading...</p>
         </main>
       </>
@@ -326,7 +326,7 @@ export default function AdminPage() {
     return (
       <>
         <Header />
-        <main className="mx-auto max-w-3xl px-4 py-8 text-center">
+        <main className="mx-auto w-full min-w-0 max-w-3xl px-4 py-8 text-center">
           <ShieldAlert className="mx-auto mb-4 h-8 w-8 text-destructive" />
           <h1 className="text-xl font-bold uppercase tracking-wider">
             Access Denied
@@ -346,7 +346,7 @@ export default function AdminPage() {
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-3xl px-4 py-8">
+      <main className="mx-auto w-full min-w-0 max-w-3xl px-4 py-8">
         <div className="mb-8 flex items-center gap-3">
           <Disc3 className="h-5 w-5 text-primary" />
           <h1 className="text-xl font-bold uppercase tracking-wider">Admin</h1>

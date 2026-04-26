@@ -220,7 +220,7 @@ export default function PlayPage() {
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden">
       <Header />
-      <main className="flex flex-1 min-h-0 flex-col items-center px-4 py-4 sm:py-8">
+      <main className="flex flex-1 min-h-0 min-w-0 flex-col items-center px-4 py-4 sm:py-8">
         {phase === "lobby" && (
           <div className="mx-auto my-auto max-w-md space-y-6 text-center">
             <h1 className="text-2xl font-bold uppercase tracking-wider">
