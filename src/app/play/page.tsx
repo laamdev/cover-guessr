@@ -241,11 +241,11 @@ export default function PlayPage() {
 
             {phase === "guessing" && (
               <>
-                <div className="flex w-full flex-1 min-h-0 items-center justify-center">
+                <div className="flex w-full flex-1 min-h-0 items-center justify-center [container-type:size]">
                   {currentAlbum ? (
                     <CoverImage coverKey={currentAlbum.coverKey} />
                   ) : (
-                    <Skeleton className="aspect-square h-full w-auto max-h-full max-w-sm" />
+                    <Skeleton className="aspect-square w-[min(100cqi,100cqb)] max-w-sm" />
                   )}
                 </div>
                 <div className="w-full shrink-0">
@@ -261,7 +261,7 @@ export default function PlayPage() {
 
             {phase === "result" && lastResult && (
               <>
-                <div className="flex w-full flex-1 min-h-0 items-center justify-center">
+                <div className="flex w-full flex-1 min-h-0 items-center justify-center [container-type:size]">
                   {resultAlbum && (
                     <CoverImage coverKey={resultAlbum.coverKey} />
                   )}

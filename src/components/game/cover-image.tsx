@@ -9,7 +9,7 @@ export function CoverImage({ coverKey }: { coverKey: string }) {
 
   if (!url) {
     return (
-      <div className="relative aspect-square h-full w-auto max-h-full max-w-sm overflow-hidden rounded-lg">
+      <div className="relative aspect-square w-[min(100cqi,100cqb)] max-w-sm overflow-hidden rounded-lg">
         <Skeleton className="h-full w-full" />
         <div className="absolute inset-0 flex items-center justify-center">
           <Disc3 className="h-12 w-12 animate-spin text-muted-foreground" />
@@ -19,12 +19,12 @@ export function CoverImage({ coverKey }: { coverKey: string }) {
   }
 
   return (
-    <div className="relative aspect-square h-full w-auto max-h-full max-w-sm overflow-hidden rounded-lg shadow-2xl">
+    <div className="relative aspect-square w-[min(100cqi,100cqb)] max-w-sm overflow-hidden rounded-lg shadow-2xl">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}
         alt="Album cover"
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain"
       />
     </div>
   );
