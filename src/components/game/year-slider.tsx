@@ -25,7 +25,7 @@ export function YearSlider({
   }, [minYear, maxYear]);
 
   return (
-    <div className="w-full max-w-sm space-y-6">
+    <div className="w-full max-w-sm space-y-4 sm:space-y-6">
       <div className="flex items-center justify-center gap-3">
         <button
           type="button"
@@ -35,7 +35,7 @@ export function YearSlider({
         >
           <ChevronDown className="size-6" />
         </button>
-        <span className="text-5xl font-bold tabular-nums text-primary">
+        <span className="text-4xl font-bold tabular-nums text-primary sm:text-5xl">
           {year}
         </span>
         <button

@@ -162,11 +162,11 @@ export default function PlayPage() {
   const creditPercent = Math.max(0, (credits / STARTING_CREDITS) * 100);
 
   return (
-    <>
+    <div className="flex h-[100dvh] flex-col overflow-hidden">
       <Header />
-      <main className="flex flex-1 flex-col items-center px-4 py-8">
+      <main className="flex flex-1 min-h-0 flex-col items-center px-4 py-4 sm:py-8">
         {phase === "lobby" && (
-          <div className="mx-auto max-w-md space-y-6 text-center">
+          <div className="mx-auto my-auto max-w-md space-y-6 text-center">
             <h1 className="text-2xl font-bold uppercase tracking-wider">
               Ready to Play?
             </h1>
@@ -212,9 +212,9 @@ export default function PlayPage() {
         )}
 
         {(phase === "guessing" || phase === "result") && game && (
-          <div className="mx-auto flex w-full max-w-lg flex-col items-center gap-6">
+          <div className="mx-auto flex w-full max-w-lg flex-1 min-h-0 flex-col items-center gap-4 sm:gap-6">
             {/* Stats bar */}
-            <div className="flex w-full items-center gap-3 text-xs uppercase tracking-wider">
+            <div className="flex w-full shrink-0 items-center gap-3 text-xs uppercase tracking-wider">
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 <Flame className="h-3.5 w-3.5" />
                 <span className="font-bold text-foreground">
@@ -235,60 +235,70 @@ export default function PlayPage() {
             </div>
 
             {/* Credits bar */}
-            <div className="w-full">
+            <div className="w-full shrink-0">
               <Progress value={creditPercent} className="h-1.5" />
             </div>
 
             {phase === "guessing" && (
               <>
-                {currentAlbum ? (
-                  <CoverImage coverKey={currentAlbum.coverKey} />
-                ) : (
-                  <Skeleton className="aspect-square w-full max-w-sm" />
-                )}
-                <YearSlider
-                  onSubmit={handleGuess}
-                  disabled={!currentAlbum}
-                  minYear={yearRange?.min}
-                  maxYear={yearRange?.max}
-                />
+                <div className="flex w-full flex-1 min-h-0 items-center justify-center">
+                  {currentAlbum ? (
+                    <CoverImage coverKey={currentAlbum.coverKey} />
+                  ) : (
+                    <Skeleton className="aspect-square h-full w-auto max-h-full max-w-sm" />
+                  )}
+                </div>
+                <div className="w-full shrink-0">
+                  <YearSlider
+                    onSubmit={handleGuess}
+                    disabled={!currentAlbum}
+                    minYear={yearRange?.min}
+                    maxYear={yearRange?.max}
+                  />
+                </div>
               </>
             )}
 
             {phase === "result" && lastResult && (
               <>
+                <div className="flex w-full flex-1 min-h-0 items-center justify-center">
+                  {resultAlbum && (
+                    <CoverImage coverKey={resultAlbum.coverKey} />
+                  )}
+                </div>
                 {resultAlbum && (
-                  <CoverImage coverKey={resultAlbum.coverKey} />
-                )}
-                {resultAlbum && (
-                  <div>
+                  <div className="shrink-0 text-center">
                     <p className="text-sm font-medium">{resultAlbum.title}</p>
                     <p className="text-xs font-normal text-muted-foreground">
                       by {resultAlbum.artist}
                     </p>
                   </div>
                 )}
-                <RoundResult
-                  guess={lastResult.guess}
-                  correctYear={lastResult.correctYear}
-                  diff={lastResult.diff}
-                  isPerfect={lastResult.isPerfect}
-                  isGameOver={lastResult.isGameOver}
-                  onNext={handleNext}
-                />
+                <div className="shrink-0">
+                  <RoundResult
+                    guess={lastResult.guess}
+                    correctYear={lastResult.correctYear}
+                    diff={lastResult.diff}
+                    isPerfect={lastResult.isPerfect}
+                    isGameOver={lastResult.isGameOver}
+                    onNext={handleNext}
+                  />
+                </div>
               </>
             )}
           </div>
         )}
 
         {phase === "over" && game && rounds && (
-          <GameOver
-            game={game}
-            rounds={rounds}
-            onPlayAgain={handlePlayAgain}
-          />
+          <div className="w-full overflow-y-auto">
+            <GameOver
+              game={game}
+              rounds={rounds}
+              onPlayAgain={handlePlayAgain}
+            />
+          </div>
         )}
       </main>
-    </>
+    </div>
   );
 }
