@@ -67,7 +67,7 @@ export default function Home() {
   const albumCount = useQuery(api.albums.count);
 
   return (
-    <>
+    <div className="flex h-[100dvh] flex-col">
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
@@ -79,8 +79,8 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: jsonLdString(gameJsonLd) }}
       />
       <Header />
-      <main className="flex flex-1 flex-col items-center justify-center p-4">
-        <div className="mx-auto max-w-2xl text-center">
+      <main className="flex flex-1 min-h-0 flex-col overflow-y-auto p-4">
+        <div className="m-auto max-w-2xl text-center">
           <div className="mb-6 inline-block border border-dashed border-primary/40 px-3 py-1 text-xs uppercase tracking-widest text-primary">
             / Music &middot; Time &middot; Memory /
           </div>
@@ -127,7 +127,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mb-8 inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-1 border border-dashed border-border px-4 py-3 text-xs text-muted-foreground sm:px-6">
+          <div className="inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-1 border border-dashed border-border px-4 py-3 text-xs text-muted-foreground sm:px-6">
             <span>
               Albums:{" "}
               <span className="font-bold text-foreground">
@@ -143,34 +143,32 @@ export default function Home() {
               Mode: <span className="font-bold text-foreground">Survival</span>
             </span>
           </div>
-
-          <div className="flex justify-center">
-            {isSignedIn ? (
-              <Link href="/play">
-                <Button
-                  size="lg"
-                  className="text-sm uppercase tracking-wider px-8"
-                >
-                  {hasActiveGame ? "Continue Playing" : "Start Playing"}
-                </Button>
-              </Link>
-            ) : (
-              <SignInButton mode="modal">
-                <Button
-                  size="lg"
-                  className="text-sm uppercase tracking-wider px-8"
-                >
-                  Sign In to Play
-                </Button>
-              </SignInButton>
-            )}
-          </div>
         </div>
       </main>
 
-      <footer className="border-t border-dashed border-border py-4 text-center text-xs text-muted-foreground">
-        Cover Guessr &middot; Test your music knowledge
+      <footer className="shrink-0 border-t border-dashed border-border bg-background p-4">
+        <div className="mx-auto flex max-w-2xl justify-center">
+          {isSignedIn ? (
+            <Link href="/play" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                className="w-full text-sm uppercase tracking-wider sm:px-8"
+              >
+                {hasActiveGame ? "Continue Playing" : "Start Playing"}
+              </Button>
+            </Link>
+          ) : (
+            <SignInButton mode="modal">
+              <Button
+                size="lg"
+                className="w-full text-sm uppercase tracking-wider sm:w-auto sm:px-8"
+              >
+                Sign In to Play
+              </Button>
+            </SignInButton>
+          )}
+        </div>
       </footer>
-    </>
+    </div>
   );
 }
